@@ -25,21 +25,24 @@ public class TestServlet extends HttpServlet {
      */
     public TestServlet() {    	
         super();
-        // TODO Auto-generated constructor stub
+        testService= new TestService();
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		String testOutput = testService.test();
+		response.getWriter().println(testOutput);
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+		response.getWriter().println("<html><body><p>Use "
+				+ "GET instead!</p></body></html>");
 	}
 
 }

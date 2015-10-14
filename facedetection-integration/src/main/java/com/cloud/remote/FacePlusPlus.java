@@ -11,20 +11,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-public class FacePlusPlus {
+import com.cloud.common.IService;
+
+public class FacePlusPlus implements IService {
 	
 	private final String serviceUrl = "https://faceplusplus-faceplusplus.p.mashape.com/detection/detect";
 	private final String xMashapeKey = "1eIYzNA1P5msh6ThXy009FmSs5b3p1P2IoajsnAwdaN612TSBZ";
 	private HashMap<String, String> parameters;
 	public static String DEFAULT_ATTRIBUTES = "glass,pose,gender,age,race,smiling";
 
-	public FacePlusPlus(String imageUrl, String attributes ){
-		parameters = new HashMap<String, String>();
-		parameters.put("url", imageUrl);
+	public FacePlusPlus(String attributes ){
+		parameters = new HashMap<String, String>();		
 		parameters.put("attribute", attributes);
 	}
 	
-	public String run() {
+	public String run(String imageUri) {
+		parameters.put("url", imageUri);
 		RestTemplate restTemplate = new RestTemplate();
 		
 		HttpHeaders headers = new HttpHeaders();

@@ -2,6 +2,6 @@ package com.cloud.common;
 
 public interface IService {
 	
-	public String run();	
+	public String run(String imageUri);	
 
 }
