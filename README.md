@@ -7,3 +7,4 @@ facedetection-integration
 
 ## References
 Multi-module archetype from https://www.youtube.com/watch?v=obHce3gvgec
+Full project ex. https://github.com/jirkapinkas/eshop-spring-2
