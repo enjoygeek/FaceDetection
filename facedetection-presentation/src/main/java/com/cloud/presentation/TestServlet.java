@@ -15,34 +15,38 @@ import com.cloud.service.TestService;
  */
 @WebServlet("/TestServlet")
 public class TestServlet extends HttpServlet {
-	
+
 	private TestService testService;
-	
+
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public TestServlet() {    	
-        super();
-        testService= new TestService();
-    }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public TestServlet() {
+		super();
+		testService = new TestService();
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		String testOutput = testService.test();
 		response.getWriter().println(testOutput);
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-		response.getWriter().println("<html><body><p>Use "
-				+ "GET instead!</p></body></html>");
+		response.getWriter().println(
+				"<html><body><p>Use " + "GET instead!</p></body></html>");
 	}
 
 }
