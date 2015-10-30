@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.cloud.common.IService;
+import com.cloud.dto.ProcessResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class FacePlusPlus implements IService {
@@ -31,7 +32,7 @@ public class FacePlusPlus implements IService {
 		parameters.put("attribute", attributes);
 	}
 
-	public String run(String imageUri) {
+	public ProcessResult run(String imageUri) {
 		parameters.put("url", imageUri);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -52,15 +53,16 @@ public class FacePlusPlus implements IService {
 				.toUriString(), HttpMethod.GET, entity, String.class);
 		
 		ObjectMapper objectMapper = new ObjectMapper();
-		Map<String, String> result = new HashMap<>();
+		Map<String, Object> result = new HashMap<>();
 		try{
-			result = objectMapper.readValue(resultString.getBody(), HashMap.class);
+			String body = resultString.getBody();
+			result = objectMapper.readValue(body, HashMap.class);
 		}catch(Exception e){
 			logger.log(Level.SEVERE, e.getMessage());
 			result.put("Result", "Response not valid");
 		}
 		
-		return result.toString();
+		return new FacePlusPlusProcessResult(this.serviceUrl, result);
 
 	}
 

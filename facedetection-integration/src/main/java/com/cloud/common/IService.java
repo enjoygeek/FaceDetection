@@ -1,7 +1,9 @@
 package com.cloud.common;
 
+import com.cloud.dto.ProcessResult;
+
 public interface IService {
 
-	public String run(String imageUri);
+	public ProcessResult run(String imageUri);
 
 }
