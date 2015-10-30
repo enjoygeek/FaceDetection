@@ -33,6 +33,10 @@ public class FacePlusPlus implements IService {
 	}
 
 	public ProcessResult run(String imageUri) {
+		ProcessResult resultado = new FacePlusPlusProcessResult(this.serviceUrl);
+		//TODO Completar tamaño y peso de la imagen en resultado
+		//resultado.setImage(new Image());
+		
 		parameters.put("url", imageUri);
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -62,7 +66,8 @@ public class FacePlusPlus implements IService {
 			result.put("Result", "Response not valid");
 		}
 		
-		return new FacePlusPlusProcessResult(this.serviceUrl, result);
+		resultado.process(result);
+		return resultado;
 
 	}
 

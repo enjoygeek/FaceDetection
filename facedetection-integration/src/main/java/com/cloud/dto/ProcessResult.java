@@ -6,29 +6,17 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class ProcessResult {
-	
+public abstract class ProcessResult {
+
 	@JsonIgnore
 	private String serviceOutput;
 	private String endpoint;
-	protected double time;
+	protected Image image;
+	protected double startTime;
+	protected double endTime;
 	protected List<FaceDetection> faces = new ArrayList<FaceDetection>();
 
-	public ProcessResult(String endpoint, String result){
-		this.endpoint = endpoint;
-		this.serviceOutput = result;
-	}
-	
-	public ProcessResult(String endpoint, Map<String, Object> result) {
-		this.endpoint = endpoint;
-		this.serviceOutput = result.toString();
-	}
-
-	public String getEndpoint() {
-		return endpoint;
-	}
-
-	public void setEndpoint(String endpoint) {
+	public ProcessResult(String endpoint) {
 		this.endpoint = endpoint;
 	}
 
@@ -40,12 +28,36 @@ public class ProcessResult {
 		this.serviceOutput = serviceOutput;
 	}
 
-	public double getTime() {
-		return time;
+	public String getEndpoint() {
+		return endpoint;
 	}
 
-	public void setTime(double time) {
-		this.time = time;
+	public void setEndpoint(String endpoint) {
+		this.endpoint = endpoint;
+	}
+
+	public Image getImage() {
+		return image;
+	}
+
+	public void setImage(Image image) {
+		this.image = image;
+	}
+
+	public double getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(double startTime) {
+		this.startTime = startTime;
+	}
+
+	public double getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(double endTime) {
+		this.endTime = endTime;
 	}
 
 	public int getFaceCount() {
@@ -59,5 +71,7 @@ public class ProcessResult {
 	public void setFaces(List<FaceDetection> faces) {
 		this.faces = faces;
 	}
+
+	public abstract void process(Map<String, Object> processResult);
 
 }

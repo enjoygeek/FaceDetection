@@ -10,12 +10,12 @@ import com.cloud.dto.ProcessResult;
 public class FacePlusPlusProcessResult extends ProcessResult{
 	
 	
-	public FacePlusPlusProcessResult(String endpoint, Map<String, Object> output){
-		super(endpoint, output);
-		process(output);
+	public FacePlusPlusProcessResult(String endpoint){
+		super(endpoint);
 	}
 
-	private void process(Map<String,Object> processResult){
+	public void process(Map<String,Object> processResult){
+		this.setServiceOutput(processResult.toString());
 		//eyes = new ArrayList<Pair<Point2D,Point2D>>();
 		//Get detected faces
 		List<Object> faces = (List<Object>)processResult.get("face");
