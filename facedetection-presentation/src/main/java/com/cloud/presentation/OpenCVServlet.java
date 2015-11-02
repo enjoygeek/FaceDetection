@@ -33,10 +33,17 @@ public class OpenCVServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String imagen = request.getParameter("image");
+		ObjectMapper om = new ObjectMapper();	
+		
+		if(imagen== null || imagen.isEmpty()){
+			response.getOutputStream().println(om.writeValueAsString("Falta parametro image"));
+			return;
+		}
+		
 		List<ProcessResult> resultado = OpenCVRunnerService.procesar(imagen);
 		
 		//Traduccion a JSON
-		ObjectMapper om = new ObjectMapper();		
+			
 		response.getOutputStream().println(om.writeValueAsString(resultado));
 		
 	}

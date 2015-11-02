@@ -87,7 +87,7 @@ public class OpenCVProcessor {
 	public List<ProcessResult> process(String imagePath) {
 		String fileName = this.downloadImage(imagePath);
 		//TODO devolver un processresult vacio
-		if(fileName == null && fileName.isEmpty()) return null;
+		if(fileName == null || fileName.isEmpty()) return null;
 		//System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		
 		loadLibrary();
