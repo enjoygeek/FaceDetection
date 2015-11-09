@@ -53,8 +53,13 @@ public class FacePlusPlus implements IService {
 		HttpEntity<String> entity = new HttpEntity<String>("parameters",
 				headers);
 				
+		//Time measure
+		resultado.setStartTime(System.nanoTime());
+		//Actual processing
 		ResponseEntity<String> resultString = restTemplate.exchange(builder.build()
 				.toUriString(), HttpMethod.GET, entity, String.class);
+		//End time measure
+		resultado.setEndTime(System.nanoTime());
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, Object> result = new HashMap<>();

@@ -12,8 +12,10 @@ public abstract class ProcessResult {
 	private String serviceOutput;
 	private String endpoint;
 	protected Image image;
-	protected double startTime;
-	protected double endTime;
+	@JsonIgnore
+	protected long startTime;
+	@JsonIgnore
+	protected long endTime;
 	protected List<FaceDetection> faces = new ArrayList<FaceDetection>();
 
 	public ProcessResult(String endpoint) {
@@ -44,19 +46,19 @@ public abstract class ProcessResult {
 		this.image = image;
 	}
 
-	public double getStartTime() {
+	public long getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(double startTime) {
+	public void setStartTime(long startTime) {
 		this.startTime = startTime;
 	}
 
-	public double getEndTime() {
+	public long getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(double endTime) {
+	public void setEndTime(long endTime) {
 		this.endTime = endTime;
 	}
 
@@ -73,5 +75,8 @@ public abstract class ProcessResult {
 	}
 
 	public abstract void process(Map<String, Object> processResult);
-
+	
+	public float getElapsedTime(){
+		return (float)(this.endTime - this.startTime) / (float)1000000;				
+	}
 }

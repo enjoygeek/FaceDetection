@@ -11,13 +11,13 @@ public class TestService {
 
 	private String[] images = new String[] {
 			"http://www.faceplusplus.com/wp-content/themes/faceplusplus/assets/img/demo/1.jpg",
-			"http://www.weddingcostarica.com/images/pack1.jpg"
-			};
+			"http://www.weddingcostarica.com/images/pack1.jpg" };
 
 	private IService[] services;
 
 	public TestService() {
-		services = new IService[] { new FacePlusPlus(FacePlusPlus.DEFAULT_ATTRIBUTES) };
+		services = new IService[] { new FacePlusPlus(
+				FacePlusPlus.DEFAULT_ATTRIBUTES) };
 	}
 
 	public List<ProcessResult> test() {
@@ -29,9 +29,11 @@ public class TestService {
 		}
 		return output;
 	}
-	
-	public static void main (String[] args){
+
+	public static void main(String[] args) {
 		TestService ts = new TestService();
-		ts.test();
+		for(ProcessResult pr : ts.test()){
+			System.out.println(pr);
+		}
 	}
 }

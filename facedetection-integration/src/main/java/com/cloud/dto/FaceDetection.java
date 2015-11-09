@@ -12,21 +12,25 @@ public class FaceDetection {
 	private Coordinate2D rightEye;	
 	
 	public FaceDetection() {
-
+		this.boundingBox = new Rectangle2D.Double();
 	}
 
+	@JsonIgnore
 	public double getX() {
 		return boundingBox.getX();
 	}
 	
+	@JsonIgnore
 	public double getY() {
 		return boundingBox.getY();
 	}
 	
+	@JsonIgnore
 	public double getWidth(){
 		return boundingBox.getWidth();
 	}
 	
+	@JsonIgnore
 	public double getHeight(){
 		return boundingBox.getHeight();
 	}
