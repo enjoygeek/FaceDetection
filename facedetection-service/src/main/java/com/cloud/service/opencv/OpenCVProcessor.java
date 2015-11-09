@@ -111,8 +111,7 @@ public class OpenCVProcessor {
 			// im.showImage(imagenDestino);
 
 			/******* Gray *******/
-			// Imgproc.cvtColor(imagenOrigen, imagenDestino,
-			// Imgproc.COLOR_BGR2GRAY); //Gris
+			 Imgproc.cvtColor(image, image, Imgproc.COLOR_BGR2GRAY); //Gris
 			// Imgproc.blur(imagenDestino, imagenDestino, new Size(9, 9));
 			// im.showImage(imagenDestino);
 
