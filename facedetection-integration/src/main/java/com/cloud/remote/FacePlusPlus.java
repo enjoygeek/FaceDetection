@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.cloud.common.IService;
+import com.cloud.dto.Image;
 import com.cloud.dto.ProcessResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -32,12 +33,12 @@ public class FacePlusPlus implements IService {
 		parameters.put("attribute", attributes);
 	}
 
-	public ProcessResult run(String imageUri) {
+	public ProcessResult run(Image image) {
 		ProcessResult resultado = new FacePlusPlusProcessResult(this.serviceUrl);
 		//TODO Completar tamaño y peso de la imagen en resultado
 		//resultado.setImage(new Image());
 		
-		parameters.put("url", imageUri);
+		parameters.put("url", image.getUri());
 		RestTemplate restTemplate = new RestTemplate();
 
 		HttpHeaders headers = new HttpHeaders();

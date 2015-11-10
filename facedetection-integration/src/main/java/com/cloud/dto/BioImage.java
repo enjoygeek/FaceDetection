@@ -17,7 +17,7 @@ public class BioImage extends Image {
 
 	private void loadDataEye() {
 		try {
-			String line2 = Files.readAllLines(Paths.get(this.getUri())).get(2);
+			String line2 = Files.readAllLines(Paths.get(this.getUri())).get(1);
 			String[] split = line2.split("\t"); // #LX LY RX RY
 			this.setRefLeftEye(Integer.valueOf(split[0]), Integer.valueOf(split[1]));
 			this.setRefRightEye(Integer.valueOf(split[2]), Integer.valueOf(split[3]));
