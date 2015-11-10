@@ -12,28 +12,24 @@ import com.cloud.dto.ProcessResult;
 import com.cloud.remote.FacePlusPlus;
 
 public class TestService {
-	
+
 	protected static Logger logger = Logger.getGlobal();
-	
-	private List<Image> images;	
+
+	private List<Image> images;
 	private IService[] services;
 
 	public TestService() {
-		services = new IService[] { new FacePlusPlus(
-				FacePlusPlus.DEFAULT_ATTRIBUTES) };
+		services = new IService[] { new FacePlusPlus(FacePlusPlus.DEFAULT_ATTRIBUTES) };
 		images = BioID.loadImages("D:\\datasets\\BioID");
 	}
 
-	
-	
 	public List<ProcessResult> test() {
 		List<ProcessResult> output = new ArrayList<ProcessResult>();
 		for (IService service : services) {
 			for (Image image : images) {
-				try{
+				try {
 					output.add(service.run(image));
-				}
-				catch(Exception e){
+				} catch (Exception e) {
 					logger.log(Level.SEVERE, e.getMessage());
 				}
 			}
@@ -43,7 +39,7 @@ public class TestService {
 
 	public static void main(String[] args) {
 		TestService ts = new TestService();
-		for(ProcessResult pr : ts.test()){
+		for (ProcessResult pr : ts.test()) {
 			System.out.println(pr);
 		}
 	}
