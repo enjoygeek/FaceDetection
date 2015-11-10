@@ -21,7 +21,7 @@ public class TestService {
 	public TestService() {
 		services = new IService[] { new FacePlusPlus(
 				FacePlusPlus.DEFAULT_ATTRIBUTES) };
-		images = BioID.loadImages("c:\\temp\\datasets\\bioid");
+		images = BioID.loadImages("D:\\datasets\\BioID");
 	}
 
 	

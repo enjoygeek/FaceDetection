@@ -1,4 +1,4 @@
-package com.cloud.service.opencv;
+package com.cloud.local;
 
 import java.util.List;
 

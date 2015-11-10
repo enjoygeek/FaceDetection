@@ -1,6 +1,5 @@
-package com.cloud.service.opencv;
+package com.cloud.local;
 
-import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -9,29 +8,24 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import org.apache.commons.lang3.StringUtils;
-
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.imgcodecs.*;
-import org.opencv.imgproc.*;
-import org.opencv.objdetect.*;
-import org.opencv.imgproc.Imgproc.*;
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
+import org.opencv.objdetect.CascadeClassifier;
+
 import com.cloud.dto.FaceDetection;
 import com.cloud.dto.ProcessResult;
-import com.cloud.remote.OpenCVProcessResult;
-import com.fasterxml.jackson.databind.deser.std.ObjectArrayDeserializer;
 
 public class OpenCVProcessor {
 

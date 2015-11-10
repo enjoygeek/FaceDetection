@@ -1,4 +1,4 @@
-package com.cloud.remote;
+package com.cloud.local;
 
 import java.util.List;
 import java.util.Map;
