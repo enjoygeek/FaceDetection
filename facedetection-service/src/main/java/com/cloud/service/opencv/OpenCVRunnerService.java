@@ -14,7 +14,7 @@ public class OpenCVRunnerService {
 		
 		 // clasificadores.add("haarcascade_eye.xml");
 		 // clasificadores.add("lbpcascade_frontalface.xml");
-		 openCVProcessor.addClasificador("D:\\openCV\\clasificadores\\haarcascade_eye_tree_eyeglasses.xml");
+		 openCVProcessor.addClasificador("D:\\openCV\\opencv\\sources\\data\\haarcascades\\haarcascade_frontalface_default.xml");
 		 return openCVProcessor.process(image);
 		 
 	}

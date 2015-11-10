@@ -1,25 +1,32 @@
 package com.cloud.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.cloud.common.IService;
+import com.cloud.common.dataset.BioID;
+import com.cloud.dto.Image;
 import com.cloud.dto.ProcessResult;
+import com.cloud.dto.BioImage;
 import com.cloud.remote.FacePlusPlus;
+import java.io.File;
+import java.io.FilenameFilter;
 
 public class TestService {
-
-	private String[] images = new String[] {
-			"http://www.faceplusplus.com/wp-content/themes/faceplusplus/assets/img/demo/1.jpg",
-			"http://www.weddingcostarica.com/images/pack1.jpg" };
-
+	
+	private List<Image> images;
+	
 	private IService[] services;
 
 	public TestService() {
 		services = new IService[] { new FacePlusPlus(
 				FacePlusPlus.DEFAULT_ATTRIBUTES) };
+		images = BioID.loadImages("D:\\datasets\\BioID");
 	}
 
+	
+	
 	public List<ProcessResult> test() {
 		List<ProcessResult> output = new ArrayList<ProcessResult>();
 		for (IService service : services) {
