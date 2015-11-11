@@ -21,7 +21,7 @@ public class OpenCVRunnerService {
 	
 	//PRA PROBAR
 	public static void main(String[] args){
-		List<ProcessResult> procesar = OpenCVRunnerService.procesar("http://www.weddingcostarica.com/images/pack1.jpg");
+		List<ProcessResult> procesar = OpenCVRunnerService.procesar("http://people.sc.fsu.edu/~jburkardt/data/pgma/lena.ascii.pgm");
 		ObjectMapper om = new ObjectMapper();
 		try {
 			String writeValueAsString = om.writeValueAsString(procesar);

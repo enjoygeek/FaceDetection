@@ -3,6 +3,8 @@ package com.cloud.remote;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FilenameUtils;
+
 import com.cloud.dto.Coordinate2D;
 import com.cloud.dto.FaceDetection;
 import com.cloud.dto.Image;
@@ -17,12 +19,14 @@ public class FacePlusPlusProcessResult extends ProcessResult {
 	}
 
 	private Image parseImageData(Map<String, Object> processResult) {
-		String url = String.valueOf(processResult.get("url"));
+		String url = String.valueOf(processResult.get("url"));//El webservice retorna la url completa con la extension
+		String extensionImage ="."+FilenameUtils.getExtension(url);
+		url =  FilenameUtils.removeExtension(url);
 		Integer imgWidth = Integer.valueOf(String.valueOf(processResult
 				.get("img_width")));
 		Integer imgheight = Integer.valueOf(String.valueOf(processResult
 				.get("img_height")));
-		return new Image(url, imgWidth, imgheight, 0);
+		return new Image(url,extensionImage, imgWidth, imgheight, 0);
 	}
 
 	public FaceDetection parseFace(Map<String, Object> attributes) {
@@ -73,4 +77,5 @@ public class FacePlusPlusProcessResult extends ProcessResult {
 		}
 		return "";
 	}
+
 }

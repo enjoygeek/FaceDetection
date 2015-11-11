@@ -10,8 +10,7 @@ import com.cloud.dto.ProcessResult;
 public class OpenCVProcessResult extends ProcessResult {
 	
 	public OpenCVProcessResult(String endpoint) {
-		super(endpoint);
-		
+		super(endpoint);		
 	}
 
 
@@ -23,8 +22,7 @@ public class OpenCVProcessResult extends ProcessResult {
 		long fileSize = (long)processResult.get("size");
 		List<FaceDetection> faces=	(List<FaceDetection>)processResult.get("faces");					
 		this.setFaces(faces);
-		this.image = new Image(uri, width, height, fileSize);
-
+		this.image = new Image(uri, ".pgm",width, height, fileSize);
 	}
 
 }

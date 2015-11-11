@@ -32,7 +32,7 @@ public class BioImage extends Image {
 	}
 
 	public BioImage(String uri, int width, int height, long fileSize, int lx, int ly, int rx, int ry) {
-		super(uri, width, height, fileSize);//Uri no incluye la extension
+		super(uri,BioID.extensionImage, width, height, fileSize);//Uri no incluye la extension
 		setRefLeftEye(lx, ly);
 		setRefRightEye(rx, ry);
 	}
