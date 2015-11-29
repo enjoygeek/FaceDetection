@@ -26,7 +26,7 @@ public class FacePlusPlusProcessResult extends ProcessResult {
 				.get("img_width")));
 		Integer imgheight = Integer.valueOf(String.valueOf(processResult
 				.get("img_height")));
-		return new Image(url,extensionImage, imgWidth, imgheight, 0);
+		return new Image(url,imgWidth, imgheight);
 	}
 
 	public FaceDetection parseFace(Map<String, Object> attributes) {

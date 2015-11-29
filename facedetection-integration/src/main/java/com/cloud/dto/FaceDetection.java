@@ -9,7 +9,9 @@ public class FaceDetection {
 	@JsonIgnore
 	private Rectangle2D boundingBox;
 	private Coordinate2D leftEye;
-	private Coordinate2D rightEye;	
+	private Coordinate2D rightEye;
+	private Coordinate2D nose;
+	private Coordinate2D mouth;
 	
 	public FaceDetection() {
 		this.boundingBox = new Rectangle2D.Double();
@@ -53,6 +55,22 @@ public class FaceDetection {
 
 	public void setRightEye(Coordinate2D rightEye) {
 		this.rightEye = rightEye;
+	}
+
+	public Coordinate2D getNose() {
+		return nose;
+	}
+
+	public void setNose(Coordinate2D nose) {
+		this.nose = nose;
+	}
+
+	public Coordinate2D getMouth() {
+		return mouth;
+	}
+
+	public void setMouth(Coordinate2D mouth) {
+		this.mouth = mouth;
 	}
 
 }

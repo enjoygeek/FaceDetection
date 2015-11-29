@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cloud.dto.Image;
 import com.cloud.dto.ProcessResult;
 import com.cloud.local.OpenCVRunnerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,6 +34,7 @@ public class OpenCVServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String imagen = request.getParameter("image");
+		
 		ObjectMapper om = new ObjectMapper();	
 		
 		if(imagen== null || imagen.isEmpty()){
@@ -40,7 +42,7 @@ public class OpenCVServlet extends HttpServlet {
 			return;
 		}
 		
-		List<ProcessResult> resultado = OpenCVRunnerService.procesar(imagen);
+		List<ProcessResult> resultado = OpenCVRunnerService.procesar(new Image(imagen,-1,-1));
 		
 		//Traduccion a JSON
 			

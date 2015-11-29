@@ -22,7 +22,10 @@ public class OpenCVProcessResult extends ProcessResult {
 		long fileSize = (long)processResult.get("size");
 		List<FaceDetection> faces=	(List<FaceDetection>)processResult.get("faces");					
 		this.setFaces(faces);
-		this.image = new Image(uri, ".pgm",width, height, fileSize);
+		this.image = (Image)processResult.get("image");
+		this.endTime = (long)processResult.get("elapsedTime");
+				
+		//this.image = new Image(uri, uri.substring(uri.lastIndexOf('.'),uri.length()),width, height, fileSize);
 	}
 
 }
