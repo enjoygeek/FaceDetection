@@ -32,12 +32,14 @@ public class Image {
 	private int width;
 	private int height;
 	private String extensionImage;
+	@JsonIgnore
 	private File file;
 	private Mat image;
 
 	public Image() {
 	};
 
+	
 	public Image(String uri,int width,int height) {
 		super();
 		String fileName = this.downloadImage(uri); //Si es una imagen que está en la web, la descarga y retorna el path local
@@ -107,7 +109,7 @@ public class Image {
 	public void setHeight(int height) {
 		this.height = height;
 	}
-	
+		
 	public File getFile() {
 		return file;
 	}

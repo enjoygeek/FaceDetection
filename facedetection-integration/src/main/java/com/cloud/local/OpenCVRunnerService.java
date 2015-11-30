@@ -5,6 +5,9 @@ import java.text.NumberFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.opencv.objdetect.CascadeClassifier;
+
+import com.cloud.common.IService;
 import com.cloud.common.NativeLibraries;
 import com.cloud.dto.Image;
 import com.cloud.dto.ProcessResult;
@@ -16,33 +19,24 @@ public class OpenCVRunnerService {
 	public static final String face_cascade_name = "D:\\openCV\\opencv\\sources\\data\\haarcascades\\haarcascade_frontalface_alt.xml";
 	public static final String eyes_cascade_name = "D:\\openCV\\opencv\\sources\\data\\haarcascades\\haarcascade_eye.xml";
 
-	public static List<ProcessResult> procesar(Image image) {		
-		OpenCVProcessor openCVProcessor = new OpenCVProcessor();
-
-		openCVProcessor.addFaceClassifier(face_cascade_name);
-		
-		openCVProcessor.addEyesClassifier(eyes_cascade_name);
-		openCVProcessor.addEyesClassifier(face_cascade_name);
-		return openCVProcessor.process(image);
-	}
-
 	// PARA PROBAR
 	public static void main(String[] args) {
 		List<ProcessResult> procesar = null;
-		// http://people.sc.fsu.edu/~jburkardt/data/pgma/lena.ascii.pgm
-		// http://estaticos.muyinteresante.es/rcs/articles/2657/hombre-casado.jpg
-		// http://www.bodaplanes.com/blog/wp-content/uploads/2012/05/boda-alejandro-sanz.jpg
-		// List<ProcessResult> procesar =
-		// OpenCVRunnerService.procesar("http://estaticos.muyinteresante.es/rcs/articles/2657/hombre-casado.jpg");
+		OpenCVProcessor openCVProcessor = new OpenCVProcessor(face_cascade_name,eyes_cascade_name);
+		////// Defino los clasificadores//////
+		CascadeClassifier faceClassifier = new CascadeClassifier(face_cascade_name);
+		CascadeClassifier eyeClassifier = new CascadeClassifier(eyes_cascade_name);
+		openCVProcessor.setFaceClassifier(faceClassifier);
+		openCVProcessor.setEyesClassifier(eyeClassifier);
+
 		Image im;
 		NumberFormat formatter = new DecimalFormat("0000");
 		NativeLibraries.loadLibraries();
 		Date comienzo = new java.util.Date();
-		for (int i = 0; i <= 100; i++) {
+		for (int i = 0; i < 1; i++) {
 			// System.out.println("Imagen:
-			// "+"BioID_"+formatter.format(i)+".pgm");			
-			procesar = OpenCVRunnerService
-					.procesar(new Image("D:\\datasets\\BioID\\BioID_" + formatter.format(i) + ".pgm", -1, -1));
+			// "+"BioID_"+formatter.format(i)+".pgm");
+			openCVProcessor.process(new Image("D:\\datasets\\BioID\\BioID_" + formatter.format(i) + ".pgm", -1, -1));
 
 			ObjectMapper om = new ObjectMapper();
 			try {
@@ -57,7 +51,8 @@ public class OpenCVRunnerService {
 
 		}
 		long fin = new java.util.Date().getTime() - comienzo.getTime();
-		System.out.println("Demora total del proceso: " + fin/1000 + " segundos");
+		System.out.println("Demora total del proceso: " + fin / 1000 + " segundos");
 
 	}
+
 }
