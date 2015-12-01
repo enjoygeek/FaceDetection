@@ -70,11 +70,11 @@ public class Image {
 		file = new File(fileName);
 	}
 
-	private String downloadImage(String imageUrl) throws Exception {
-		if(Image.BASE_PATH_TO_DOWNLOAD == null || Image.BASE_PATH_TO_DOWNLOAD.isEmpty())
-			throw new Exception("Missing local upload path");
+	private String downloadImage(String imageUrl) throws Exception {		
 		String protocolo = imageUrl; 
 		if (protocolo.toLowerCase().startsWith("http:") || protocolo.toLowerCase().startsWith("https:")  || protocolo.toLowerCase().startsWith("www.")){
+			if(Image.BASE_PATH_TO_DOWNLOAD == null || Image.BASE_PATH_TO_DOWNLOAD.isEmpty())
+				throw new Exception("Missing local upload path");
 			try {				
 				URL url = new URL(imageUrl);
 				InputStream in = new BufferedInputStream(url.openStream());

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import org.apache.commons.io.FilenameUtils;
+
 import com.cloud.common.dataset.BioID;
 
 public class BioImage extends Image {
@@ -11,15 +13,15 @@ public class BioImage extends Image {
 	private Eye refLeftEye;
 	private Eye refRightEye;
 
-	public BioImage(String uri) {
-		super();
-		setUri(uri);//No incluye la extension
+	public BioImage(String uri) throws Exception {
+		super(uri,-1,-1);		
 		loadEyeData();
 	}
 
 	private void loadEyeData() {
 		try {
-			String line2 = Files.readAllLines(Paths.get(this.getUri()+BioID.extensionData)).get(1);
+			String fileName = FilenameUtils.removeExtension(this.getUri());
+			String line2 = Files.readAllLines(Paths.get(fileName+BioID.extensionData)).get(1);
 			String[] split = line2.split("\t"); // #LX LY RX RY
 			this.setRefLeftEye(Integer.valueOf(split[0]), Integer.valueOf(split[1]));
 			this.setRefRightEye(Integer.valueOf(split[2]), Integer.valueOf(split[3]));

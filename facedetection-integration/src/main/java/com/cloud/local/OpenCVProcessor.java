@@ -9,8 +9,11 @@ import java.util.Map;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 
 import com.cloud.common.IService;
@@ -25,9 +28,9 @@ public class OpenCVProcessor implements IService {
 	private CascadeClassifier eyes_cascade;
 
 	public OpenCVProcessor(String face_cascade_url, String eyes_cascade_url) {
-		////// Defino los clasificadores//////
+		// //// Defino los clasificadores//////
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		setFaceClassifier( new CascadeClassifier(face_cascade_url));
+		setFaceClassifier(new CascadeClassifier(face_cascade_url));
 		setEyesClassifier(new CascadeClassifier(eyes_cascade_url));
 	}
 
@@ -68,62 +71,83 @@ public class OpenCVProcessor implements IService {
 		Rect rect_face;
 
 		java.util.Date comienzo = new java.util.Date();
-		///////////////////////////////
+		// /////////////////////////////
 		// Comienzo detección de rostro
-		///////////////////////////////
-		getFaceClassifier().detectMultiScale(image.getMatImage(), faceDetections, fEscalar, minNeighbors, 0,
-				new Size(minSizeFace, minSizeFace), new Size(maxSizeFace, maxSizeFace));
+		// /////////////////////////////
+		getFaceClassifier().detectMultiScale(image.getMatImage(),
+				faceDetections, fEscalar, minNeighbors, 0,
+				new Size(minSizeFace, minSizeFace),
+				new Size(maxSizeFace, maxSizeFace));
 
 		List<FaceDetection> faces = new ArrayList<FaceDetection>();
 		for (int r = 0; r < faceDetections.toArray().length; r++) {
 			rect_face = faceDetections.toArray()[r];
 			faceDetection = new FaceDetection();
-			faceDetection.setBoundingBox(
-					new Rectangle2D.Double(rect_face.x, rect_face.y, rect_face.width, rect_face.height));
-			///////////////////////////////
+			faceDetection.setBoundingBox(new Rectangle2D.Double(rect_face.x,
+					rect_face.y, rect_face.width, rect_face.height));
+			// /////////////////////////////
 			// Comienzo detección de ojos
-			///////////////////////////////
+			// /////////////////////////////
 			leftEye = rightEye = nose = mouth = null; // Reinicio los puntos del
 														// rostro anterior
-			Mat faceROI = image.getMatImage().submat(faceDetections.toArray()[r]);
 
-			getEyesClassifier().detectMultiScale(faceROI, eyeDetections, fEscalar, minNeighbors, 0,
-					new Size(minSizeFace / 50, minSizeFace / 50), new Size(maxSizeFace / 2, maxSizeFace / 2));
+			Mat faceROI = image.getMatImage().submat(
+					faceDetections.toArray()[r]);
+			Mat faceROI_Effect = setEffect(faceROI);
+			getEyesClassifier().detectMultiScale(faceROI_Effect, eyeDetections,
+					1.015, 3, 0,
+					new Size(minSizeFace / 50, minSizeFace / 50),
+					new Size(maxSizeFace *35/100, maxSizeFace *25/100));
 
 			if (eyeDetections.toArray().length > 1) {
 				sortEyes = sortRect(eyeDetections.toArray());
-				leftEye = new Coordinate2D(sortEyes[0].x, sortEyes[0].y);
-				rightEye = new Coordinate2D(sortEyes[sortEyes.length - 1].x, sortEyes[sortEyes.length - 1].y);
-				// El ultimo en el eje x es siempre el ojo derecho
+				rightEye = new Coordinate2D(sortEyes[0].x + rect_face.x,
+						sortEyes[0].y + rect_face.y);
+				leftEye = new Coordinate2D(sortEyes[sortEyes.length - 1].x
+						+ rect_face.x, sortEyes[sortEyes.length - 1].y
+						+ rect_face.y);
+				// El ultimo en el eje x es siempre el ojo izquierdo de la
+				// persona
 
 				if (sortEyes.length == 3) {
 					// Se detecto la nariz
-					nose = new Coordinate2D(sortEyes[1].x, sortEyes[1].y);
+					nose = new Coordinate2D(sortEyes[1].x + rect_face.x,
+							sortEyes[1].y + rect_face.y);
 				} else if (sortEyes.length == 4) {
 					// Se detecto nariz y boca
 					if (sortEyes[1].y < sortEyes[2].y) {
-						nose = new Coordinate2D(sortEyes[1].x, sortEyes[1].y);
-						mouth = new Coordinate2D(sortEyes[2].x, sortEyes[2].y);
+						nose = new Coordinate2D(sortEyes[1].x + rect_face.x,
+								sortEyes[1].y + rect_face.y);
+						mouth = new Coordinate2D(sortEyes[2].x + rect_face.x,
+								sortEyes[2].y + rect_face.y);
 					} else {
-						mouth = new Coordinate2D(sortEyes[1].x, sortEyes[1].y);
-						nose = new Coordinate2D(sortEyes[2].x, sortEyes[2].y);
+						mouth = new Coordinate2D(sortEyes[1].x + rect_face.x,
+								sortEyes[1].y + rect_face.y);
+						nose = new Coordinate2D(sortEyes[2].x + rect_face.x,
+								sortEyes[2].y + rect_face.y);
 					}
 				}
 			}
-			/*
-			 * else{ System.out.println("Se detectaron: "
-			 * +eyeDetections.toArray().length+ " puntos"); }
-			 * 
-			 * for (int eyes = 0; eyes < eyeDetections.toArray().length;eyes++){
-			 * //Dibujar los ojos int radius = 5; Point center_Eye = new
-			 * Point(eyeDetections.toArray()[eyes].x,
-			 * eyeDetections.toArray()[eyes].y);
-			 * org.opencv.imgproc.Imgproc.circle(faceROI, center_Eye, radius,
-			 * new Scalar(Math.min(5*eyes,255), Math.min(30*eyes,255),
-			 * Math.min(75*eyes,255)), 5, 5, 0); } // Mostrar la cara analizada
-			 * Imshow im = new Imshow( "Face number: "+r);
-			 * im.showImage(faceROI);
-			 */
+
+			else {
+				System.out.println("Se detectaron: "
+						+ eyeDetections.toArray().length + " puntos");
+			}
+
+			for (int eyes = 0; eyes < eyeDetections.toArray().length; eyes++) {
+				// Dibujar los ojos
+				int radius = 5;
+				Point center_Eye = new Point(eyeDetections.toArray()[eyes].x,
+						eyeDetections.toArray()[eyes].y);
+				org.opencv.imgproc.Imgproc.circle(
+						faceROI,
+						center_Eye,
+						radius,
+						new Scalar(Math.min(5 * eyes, 255), Math.min(30 * eyes,
+								255), Math.min(75 * eyes, 255)), 5, 5, 0);
+			} // Mostrar la cara analizada
+			Imshow im = new Imshow("Face number: " + r);
+			im.showImage(faceROI);
 
 			faceDetection.setLeftEye(leftEye);
 			faceDetection.setRightEye(rightEye);
@@ -142,7 +166,8 @@ public class OpenCVProcessor implements IService {
 		resultado.put("size", image.getFileSize());
 		resultado.put("image", image);
 
-		OpenCVProcessResult openCVProcessResult = new OpenCVProcessResult("OpenCV - " + face_cascade.toString());
+		OpenCVProcessResult openCVProcessResult = new OpenCVProcessResult(
+				"OpenCV - " + face_cascade.toString());
 		openCVProcessResult.process(resultado);
 
 		// Devolver processResult correcto
@@ -173,7 +198,7 @@ public class OpenCVProcessor implements IService {
 
 	@SuppressWarnings("unused")
 	private Mat setEffect(Mat imagenOrigen) {
-		Mat imagenDestino = null;
+		Mat imagenDestino = new Mat();
 		// ***Efectos sobre la imagen*******/
 		/******* Blur *******/
 		// Imgproc.GaussianBlur(imagenOrigen, imagenDestino, new
@@ -181,14 +206,14 @@ public class OpenCVProcessor implements IService {
 		// im.showImage(imagenDestino);
 
 		/******* Gray *******/
-		// Imgproc.cvtColor(image, image_gray, Imgproc.COLOR_BGR2GRAY);
-		// //Gris
-		// Imgproc.blur(imagenDestino, imagenDestino, new Size(9, 9));
-		// im.showImage(imagenDestino);
-
+		 //Imgproc.cvtColor(imagenOrigen, imagenDestino, Imgproc.COLOR_BGR2GRAY);
+		 
+		 /******* BLUR *******/
+		 Imgproc.blur(imagenOrigen, imagenDestino, new Size(9, 9));		
 		/******* Canny *******/
 		// Imgproc.Canny(imagenOrigen, imagenDestino, 10, 100);
-		// im.showImage(imagenDestino);
+		 Imshow im = new Imshow("Face number: ");
+		 im.showImage(imagenDestino);
 
 		/******* Threshold *******/
 		// Imgproc.threshold(imagenOrigen, imagenDestino, 50, 150, 1);

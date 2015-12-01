@@ -46,6 +46,7 @@ public class TestService {
 		List<ProcessResult> output = new ArrayList<ProcessResult>();
 		for (IService service : services) {
 			for (Image image : images) {
+				System.out.println("Processing: "+image.getUri());
 				try {
 					output.add(service.run(image));
 				} catch (Exception e) {

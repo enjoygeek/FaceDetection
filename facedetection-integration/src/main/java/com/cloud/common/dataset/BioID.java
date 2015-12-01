@@ -28,12 +28,17 @@ public class BioID {
 		List<File> directoryListing = Arrays.asList(listFiles);
 
 		// Supongo que se llaman igual (.eye y .pgm)
-		directoryListing.stream().filter(f -> f.getName().endsWith(extensionData)).forEach(f -> {
-			Image bI = new BioImage(f.getParent() + "\\" + FilenameUtils.removeExtension(f.getName()));
-			PgmReader.setImageData(bI, extensionImage);
-			images.add(bI);
-
-		});
+		directoryListing.stream()
+			.filter(f -> f.getName().endsWith(extensionImage))
+			.forEach(f -> {
+				try{
+				Image bI = new BioImage(f.getParent() + "\\" + f.getName());
+				images.add(bI);
+				}
+				catch(Exception e){
+					System.err.println(e.getMessage());
+				}				
+			});
 
 		return images;
 
