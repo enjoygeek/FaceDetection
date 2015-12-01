@@ -26,6 +26,12 @@ public class OpenCVProcessor implements IService {
 
 	private CascadeClassifier face_cascade;
 	private CascadeClassifier eyes_cascade;
+	private double fEscalar = 1.05; // Valores mas altos significan menos precisión.	
+	private int minNeighbors = 3;// Valores mas altos significan menos precisión pero mas fiabilidad
+	private int minPercentSizeFace; 
+	private int maxPercentSizeFace;
+	private int minPercentSizeEye; 
+	private int maxPercentSizeEye;
 
 	public OpenCVProcessor(String face_cascade_url, String eyes_cascade_url) {
 		// //// Defino los clasificadores//////
@@ -33,7 +39,7 @@ public class OpenCVProcessor implements IService {
 		setFaceClassifier(new CascadeClassifier(face_cascade_url));
 		setEyesClassifier(new CascadeClassifier(eyes_cascade_url));
 	}
-
+		
 	public void setFaceClassifier(CascadeClassifier clasificador) {
 		this.face_cascade = clasificador;
 	}
@@ -55,12 +61,7 @@ public class OpenCVProcessor implements IService {
 		if (image == null)
 			return null;
 
-		double fEscalar = 1.05; // Valores mas altos significan menos precisión.
-								// 5% de incremento
-		int minNeighbors = 3;// Valores mas altos significan menos precisión
-								// pero mas fiabilidad
-		int minSizeFace = (int) (image.getWidth() * 5 / 100);
-		int maxSizeFace = (int) (image.getWidth() * 35 / 100);
+		
 
 		Coordinate2D leftEye, rightEye, nose, mouth;
 
@@ -76,8 +77,8 @@ public class OpenCVProcessor implements IService {
 		// /////////////////////////////
 		getFaceClassifier().detectMultiScale(image.getMatImage(),
 				faceDetections, fEscalar, minNeighbors, 0,
-				new Size(minSizeFace, minSizeFace),
-				new Size(maxSizeFace, maxSizeFace));
+				new Size(image.getWidth()*minPercentSizeFace/100, image.getHeight()*minPercentSizeFace/100),
+				new Size(image.getWidth()*maxPercentSizeFace/100, image.getHeight()*maxPercentSizeFace/100));
 
 		List<FaceDetection> faces = new ArrayList<FaceDetection>();
 		for (int r = 0; r < faceDetections.toArray().length; r++) {
@@ -94,10 +95,12 @@ public class OpenCVProcessor implements IService {
 			Mat faceROI = image.getMatImage().submat(
 					faceDetections.toArray()[r]);
 			Mat faceROI_Effect = setEffect(faceROI);
+			
 			getEyesClassifier().detectMultiScale(faceROI_Effect, eyeDetections,
 					1.015, 3, 0,
-					new Size(minSizeFace / 50, minSizeFace / 50),
-					new Size(maxSizeFace *35/100, maxSizeFace *25/100));
+					new Size(image.getWidth()* minPercentSizeEye / 100,image.getHeight()* minPercentSizeEye / 100),
+					new Size(image.getWidth()* maxPercentSizeEye / 100,image.getHeight()* maxPercentSizeEye / 100));
+			
 
 			if (eyeDetections.toArray().length > 1) {
 				sortEyes = sortRect(eyeDetections.toArray());
@@ -143,8 +146,8 @@ public class OpenCVProcessor implements IService {
 						faceROI,
 						center_Eye,
 						radius,
-						new Scalar(Math.min(5 * eyes, 255), Math.min(30 * eyes,
-								255), Math.min(75 * eyes, 255)), 5, 5, 0);
+						new Scalar(Math.min(5 * eyes, 255), Math.min(30 * eyes,255), 
+								Math.min(75 * eyes, 255)), 5, 5, 0);
 			} // Mostrar la cara analizada
 			Imshow im = new Imshow("Face number: " + r);
 			im.showImage(faceROI);
@@ -198,27 +201,26 @@ public class OpenCVProcessor implements IService {
 
 	@SuppressWarnings("unused")
 	private Mat setEffect(Mat imagenOrigen) {
-		Mat imagenDestino = new Mat();
+		Mat imagenDestino = imagenOrigen;
 		// ***Efectos sobre la imagen*******/
 		/******* Blur *******/
-		// Imgproc.GaussianBlur(imagenOrigen, imagenDestino, new
-		// Size(45,45),0);
-		// im.showImage(imagenDestino);
+		 //Imgproc.GaussianBlur(imagenOrigen, imagenDestino, new Size(9,9),0);		 
 
 		/******* Gray *******/
 		 //Imgproc.cvtColor(imagenOrigen, imagenDestino, Imgproc.COLOR_BGR2GRAY);
 		 
 		 /******* BLUR *******/
-		 Imgproc.blur(imagenOrigen, imagenDestino, new Size(9, 9));		
+		 Imgproc.blur(imagenOrigen, imagenDestino, new Size(15, 15));		
 		/******* Canny *******/
 		// Imgproc.Canny(imagenOrigen, imagenDestino, 10, 100);
-		 Imshow im = new Imshow("Face number: ");
-		 im.showImage(imagenDestino);
+		 
 
 		/******* Threshold *******/
-		// Imgproc.threshold(imagenOrigen, imagenDestino, 50, 150, 1);
-		// im.showImage(imagenDestino);
-
+		//Imgproc.threshold(imagenOrigen, imagenDestino, 80, 150, 1);		
+		
+		
+		Imshow im = new Imshow("Face with effect");
+		 im.showImage(imagenDestino);
 		return imagenDestino;
 	}
 
@@ -227,4 +229,51 @@ public class OpenCVProcessor implements IService {
 		return process(image);
 	}
 
+	public double getfEscalar() {
+		return fEscalar;
+	}
+
+	public void setfEscalar(double fEscalar) {
+		this.fEscalar = fEscalar;
+	}
+
+	public int getMinNeighbors() {
+		return minNeighbors;
+	}
+
+	public void setMinNeighbors(int minNeighbors) {
+		this.minNeighbors = minNeighbors;
+	}
+
+	public int getMinPercentSizeFace() {
+		return minPercentSizeFace;
+	}
+
+	public void setMinPercentSizeFace(int minPercentSizeFace) {
+		this.minPercentSizeFace = minPercentSizeFace;
+	}
+
+	public int getMaxPercentSizeFace() {
+		return maxPercentSizeFace;
+	}
+
+	public void setMaxPercentSizeFace(int maxPercentSizeFace) {
+		this.maxPercentSizeFace = maxPercentSizeFace;
+	}
+
+	public int getMinPercentSizeEye() {
+		return minPercentSizeEye;
+	}
+
+	public void setMinPercentSizeEye(int minPercentSizeEye) {
+		this.minPercentSizeEye = minPercentSizeEye;
+	}
+
+	public int getMaxPercentSizeEye() {
+		return maxPercentSizeEye;
+	}
+
+	public void setMaxPercentSizeEye(int maxPercentSizeEye) {
+		this.maxPercentSizeEye = maxPercentSizeEye;
+	}	
 }

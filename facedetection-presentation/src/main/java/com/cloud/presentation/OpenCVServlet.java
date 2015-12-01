@@ -57,10 +57,18 @@ public class OpenCVServlet extends HttpServlet {
 		}
 		String faceCascade = properties.getPropValue(FDProperties.FACE_CASCADE_URL);
 		String eyeCascade = properties.getPropValue(FDProperties.EYE_CASCADE_URL);
-		ProcessResult resultado = new OpenCVProcessor(faceCascade,eyeCascade).run(image);
+
+		OpenCVProcessor ocv_p = new OpenCVProcessor(faceCascade,eyeCascade);
+		ocv_p.setfEscalar(Double.parseDouble(properties.getPropValue(FDProperties.F_ESCALAR)));
+		ocv_p.setMinNeighbors(Integer.parseInt(properties.getPropValue(FDProperties.MIN_NEIGHBORS)));
+		ocv_p.setMinPercentSizeFace(Integer.parseInt(properties.getPropValue(FDProperties.MIN_PERCENT_SIZE_FACE)));
+		ocv_p.setMaxPercentSizeFace(Integer.parseInt(properties.getPropValue(FDProperties.MAX_PERCENT_SIZE_FACE)));
+		ocv_p.setMinPercentSizeEye(Integer.parseInt(properties.getPropValue(FDProperties.MIN_PERCENT_SIZE_EYE)));
+		ocv_p.setMaxPercentSizeEye(Integer.parseInt(properties.getPropValue(FDProperties.MAX_PERCENT_SIZE_EYE)));
 		
-		//Traduccion a JSON
-			
+		ProcessResult resultado = ocv_p.run(image);
+		
+		//Traduccion a JSON			
 		response.getOutputStream().println(om.writeValueAsString(resultado));
 		
 	}
