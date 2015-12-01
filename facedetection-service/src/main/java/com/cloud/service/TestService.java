@@ -10,23 +10,26 @@ import com.cloud.common.dataset.BioID;
 import com.cloud.dto.Image;
 import com.cloud.dto.ProcessResult;
 import com.cloud.local.OpenCVProcessor;
-import com.cloud.local.OpenCVRunnerService;
-import com.cloud.remote.FacePlusPlus;
 
 public class TestService {
 
 	protected static Logger logger = Logger.getGlobal();
-
+	
+	private String dataset;
+	private String face_cascade_url;
+	private String eyes_cascade_url;
+	
 	private List<Image> images;
 	private IService[] services;
 
-	public TestService() {
+	public TestService(String dataset, String faceCascadeClassifier, String eyeCascadeClassifier) {
+		this.dataset = dataset;
 		//TODO: Cargar desde el archivo de configuracion
-		String face_cascade_url = "D:\\openCV\\opencv\\sources\\data\\haarcascades\\haarcascade_frontalface_alt.xml";
-		String eyes_cascade_url = "D:\\openCV\\opencv\\sources\\data\\haarcascades\\haarcascade_eye.xml";
+		face_cascade_url = faceCascadeClassifier;
+		eyes_cascade_url = eyeCascadeClassifier;
 		 //new FacePlusPlus(FacePlusPlus.DEFAULT_ATTRIBUTES),
 		services = new IService[] { new OpenCVProcessor(face_cascade_url,eyes_cascade_url) };
-		images = BioID.loadImages("D:\\datasets\\BioID");		
+		images = BioID.loadImages(this.dataset);		
 	}
 
 	public List<ProcessResult> test() {
@@ -43,10 +46,4 @@ public class TestService {
 		return output;
 	}
 
-	public static void main(String[] args) {
-		TestService ts = new TestService();
-		for (ProcessResult pr : ts.test()) {
-			System.out.println(pr);
-		}
-	}
 }

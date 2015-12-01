@@ -1,10 +1,7 @@
 package com.cloud.local;
 
 import java.awt.geom.Rectangle2D;
-import java.sql.Date;
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,11 +9,8 @@ import java.util.Map;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
-import org.opencv.core.Point;
 import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
 import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 
 import com.cloud.common.IService;
@@ -53,53 +47,7 @@ public class OpenCVProcessor implements IService {
 		return eyes_cascade;
 	}
 
-	void detectAndDisplay(Mat image) {
-		CascadeClassifier faceDetector = new CascadeClassifier(OpenCVRunnerService.face_cascade_name);
-		CascadeClassifier eyeDetector = new CascadeClassifier(OpenCVRunnerService.eyes_cascade_name);
-		MatOfRect faces = new MatOfRect();
-		Mat frame_gray = image;
-
-		Imgproc.cvtColor(image, frame_gray, Imgproc.COLOR_BGR2GRAY);
-		Imgproc.equalizeHist(frame_gray, frame_gray);
-
-		// -- Detect faces
-		faceDetector.detectMultiScale(frame_gray, faces, 1.1, 2, 0, new Size(3, 3), new Size(3000, 3000));
-		System.out.println("FACES: " + faces.size());
-		for (Rect rect : faces.toArray()) {
-			Point center = new Point(rect.x + rect.width * 0.5, rect.y + rect.height * 0.5);
-			FaceDetection faceDetection = new FaceDetection();
-			faceDetection.setBoundingBox(
-					new Rectangle2D.Double(rect.width * 0.5, rect.height * 0.5, rect.width, rect.height));
-			org.opencv.imgproc.Imgproc.ellipse(image, center, new Size(rect.width * 0.5, rect.height * 0.5), 0, 0, 360,
-					new Scalar(255, 0, 255), 4, 8, 0);
-			Mat faceROI = frame_gray;
-			MatOfRect eyes = new MatOfRect();
-
-			// -- In each face, detect eyes
-			eyeDetector.detectMultiScale(faceROI, eyes, 1.1, 2, 0, new Size(30, 30), new Size(300, 300));
-			System.out.println("EYES: " + eyes.size());
-			for (Rect eye : eyes.toArray()) {
-				System.out.println(eye.x + "-" + eye.y + "-" + eye.width + "-" + eye.height);
-				Point center_eye = new Point(eye.x + eye.width * 0.5, eye.y + eye.height * 0.5);
-				int radius = (int) Math.round((eye.width + eye.height) * 0.0005);
-
-				org.opencv.imgproc.Imgproc.circle(image, center_eye, radius, new Scalar(255, 0, 0), 4, 8, 0);
-
-			}
-			Point eye_l, eye_r;
-			int i = 0;
-			// if (eyes.toArray()[i].x < eyes.toArray()[i+1].x){
-
-			// };
-
-		}
-		// -- Show what you got
-		Imshow im = new Imshow("Ejemplo");
-		im.showImage(image);
-
-	}
-
-	public ProcessResult process(Image image) {
+	private ProcessResult process(Image image) {
 		// TODO devolver un processresult vacio
 		if (image == null)
 			return null;

@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class TestServlet extends HttpServlet {
 
 	private TestService testService;
+	private FDProperties properties = FDProperties.getInstance();
 
 	private static final long serialVersionUID = 1L;
 
@@ -28,7 +29,10 @@ public class TestServlet extends HttpServlet {
 	 */
 	public TestServlet() {
 		super();
-		testService = new TestService();
+		String dataset = properties.getPropValue(FDProperties.DATASET);
+		String faceCascade = properties.getPropValue(FDProperties.FACE_CASCADE_URL);
+		String eyeCascade = properties.getPropValue(FDProperties.EYE_CASCADE_URL);
+		testService = new TestService(dataset,faceCascade,eyeCascade);
 	}
 
 	/**

@@ -1,7 +1,6 @@
 package com.cloud.presentation;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,9 +8,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cloud.common.NativeLibraries;
 import com.cloud.dto.Image;
 import com.cloud.dto.ProcessResult;
-import com.cloud.local.OpenCVRunnerService;
+import com.cloud.local.OpenCVProcessor;
+import com.cloud.service.TestService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -20,6 +21,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @WebServlet("/OpenCVServlet")
 public class OpenCVServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	private FDProperties properties = FDProperties.getInstance();
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -41,13 +44,28 @@ public class OpenCVServlet extends HttpServlet {
 			response.getOutputStream().println(om.writeValueAsString("Falta parametro image"));
 			return;
 		}
-		
-		List<ProcessResult> resultado = OpenCVRunnerService.procesar(new Image(imagen,-1,-1));
+				
+		Image image = new Image(imagen,-1, -1);
+		String faceCascade = properties.getPropValue(FDProperties.FACE_CASCADE_URL);
+		String eyeCascade = properties.getPropValue(FDProperties.EYE_CASCADE_URL);
+		ProcessResult resultado = new OpenCVProcessor(faceCascade,eyeCascade).run(image);
 		
 		//Traduccion a JSON
 			
 		response.getOutputStream().println(om.writeValueAsString(resultado));
 		
+	}
+	
+
+	public static void main(String[] args) {		
+		FDProperties properties = FDProperties.getInstance();
+		String dataset = properties.getPropValue(FDProperties.DATASET);
+		String faceCascade = properties.getPropValue(FDProperties.FACE_CASCADE_URL);
+		String eyeCascade = properties.getPropValue(FDProperties.EYE_CASCADE_URL);
+		TestService ts = new TestService(dataset, faceCascade,eyeCascade);
+		for (ProcessResult pr : ts.test()) {
+			System.out.println(pr);
+		}
 	}
 
 }
