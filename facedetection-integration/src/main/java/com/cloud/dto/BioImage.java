@@ -31,7 +31,7 @@ public class BioImage extends Image {
 
 	}
 
-	public BioImage(String uri,int width, int height, int lx, int ly, int rx, int ry) {
+	public BioImage(String uri,int width, int height, int lx, int ly, int rx, int ry) throws Exception {
 		super(uri,width,height);
 		setRefLeftEye(lx, ly);
 		setRefRightEye(rx, ry);

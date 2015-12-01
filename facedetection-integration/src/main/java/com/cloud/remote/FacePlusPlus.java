@@ -72,7 +72,11 @@ public class FacePlusPlus implements IService {
 			result.put("Result", "Response not valid");
 		}
 		
-		resultado.process(result);
+		try {
+			resultado.process(result);
+		} catch (Exception e) {
+			result.put("Result", e.getMessage());
+		}
 		return resultado;
 
 	}

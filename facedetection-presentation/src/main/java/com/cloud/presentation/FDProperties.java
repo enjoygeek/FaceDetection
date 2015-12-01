@@ -27,6 +27,7 @@ public class FDProperties {
 	//CLASSIFIERS
 	public static final String FACE_CASCADE_URL = "FACE_CASCADE_URL";
 	public static final String EYE_CASCADE_URL = "EYE_CASCADE_URL";
+	public static final String DOWNLOAD_PATH = "DOWNLOAD_PATH";
 		
 
 	/**

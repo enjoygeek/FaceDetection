@@ -74,7 +74,7 @@ public abstract class ProcessResult {
 		this.faces = faces;
 	}
 
-	public abstract void process(Map<String, Object> processResult);
+	public abstract void process(Map<String, Object> processResult) throws Exception;
 	
 	public float getElapsedTime(){
 		return (float)(this.endTime - this.startTime) / (float)1000000;				

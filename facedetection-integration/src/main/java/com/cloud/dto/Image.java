@@ -1,8 +1,6 @@
 package com.cloud.dto;
 
 import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -27,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Image {
 	
-	private final String BASE_PATH_TO_DOWNLOAD = "D:\\datasets\\uploaded\\";
+	public static String BASE_PATH_TO_DOWNLOAD = "";
 	private String uri;
 	private int width;
 	private int height;
@@ -40,7 +38,23 @@ public class Image {
 	};
 
 	
-	public Image(String uri,int width,int height) {
+	public Image(String uri,int width,int height) throws Exception {
+		super();
+		String fileName = this.downloadImage(uri); //Si es una imagen que está en la web, la descarga y retorna el path local
+		this.setUri(fileName);		
+		image = Imgcodecs.imread(fileName, 1);
+		if (width == -1){
+			this.setWidth(image.width());
+			this.setHeight(image.height());
+		}			
+		else{
+			this.setWidth(width);
+			this.setHeight(height);
+		}						
+		file = new File(fileName);
+	}
+	
+	public Image(String uri) throws Exception {
 		super();
 		String fileName = this.downloadImage(uri); //Si es una imagen que está en la web, la descarga y retorna el path local
 		this.setUri(fileName);		
@@ -56,7 +70,9 @@ public class Image {
 		file = new File(fileName);
 	}
 
-	private String downloadImage(String imageUrl) {
+	private String downloadImage(String imageUrl) throws Exception {
+		if(Image.BASE_PATH_TO_DOWNLOAD == null || Image.BASE_PATH_TO_DOWNLOAD.isEmpty())
+			throw new Exception("Missing local upload path");
 		String protocolo = imageUrl; 
 		if (protocolo.toLowerCase().startsWith("http:") || protocolo.toLowerCase().startsWith("https:")  || protocolo.toLowerCase().startsWith("www.")){
 			try {				
@@ -73,8 +89,8 @@ public class Image {
 				byte[] response = out.toByteArray();
 	
 				Random random = new Random();
-				String imageFormat = imageUrl.substring(imageUrl.lastIndexOf("."));
-				String filename = BASE_PATH_TO_DOWNLOAD + random.nextLong() + "." + imageFormat;
+				String imageFormat = imageUrl.substring(imageUrl.lastIndexOf(".")+1);
+				String filename = BASE_PATH_TO_DOWNLOAD + "\\" + random.nextLong() + "." + imageFormat;
 				FileOutputStream fos = new FileOutputStream(filename);
 				fos.write(response);
 				fos.close();

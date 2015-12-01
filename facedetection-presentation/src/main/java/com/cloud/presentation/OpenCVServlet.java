@@ -44,8 +44,17 @@ public class OpenCVServlet extends HttpServlet {
 			response.getOutputStream().println(om.writeValueAsString("Falta parametro image"));
 			return;
 		}
-				
-		Image image = new Image(imagen,-1, -1);
+		
+		Image.BASE_PATH_TO_DOWNLOAD = properties.getPropValue(FDProperties.DOWNLOAD_PATH);
+		NativeLibraries.loadLibraries();			
+		Image image = null;
+		try {
+			image = new Image(imagen,-1, -1);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			response.getOutputStream().println(e.getMessage());
+			return;
+		}
 		String faceCascade = properties.getPropValue(FDProperties.FACE_CASCADE_URL);
 		String eyeCascade = properties.getPropValue(FDProperties.EYE_CASCADE_URL);
 		ProcessResult resultado = new OpenCVProcessor(faceCascade,eyeCascade).run(image);

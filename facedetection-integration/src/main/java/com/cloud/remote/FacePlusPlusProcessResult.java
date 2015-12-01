@@ -18,7 +18,7 @@ public class FacePlusPlusProcessResult extends ProcessResult {
 		super(endpoint);
 	}
 
-	private Image parseImageData(Map<String, Object> processResult) {
+	private Image parseImageData(Map<String, Object> processResult) throws Exception  {
 		String url = String.valueOf(processResult.get("url"));//El webservice retorna la url completa con la extension
 		String extensionImage ="."+FilenameUtils.getExtension(url);
 		url =  FilenameUtils.removeExtension(url);
@@ -51,8 +51,9 @@ public class FacePlusPlusProcessResult extends ProcessResult {
 		faceDetection.setRightEye(ojoDerecho);
 		return faceDetection;
 	}
-
-	public void process(Map<String, Object> processResult) {
+	
+	@Override
+	public void process(Map<String, Object> processResult) throws Exception {
 		this.setServiceOutput(processResult.toString());
 
 		this.setImage(parseImageData(processResult));
