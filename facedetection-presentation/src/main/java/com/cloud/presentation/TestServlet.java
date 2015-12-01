@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.cloud.dto.ProcessResult;
+import com.cloud.remote.FacePlusPlus;
 import com.cloud.service.TestService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -30,9 +31,13 @@ public class TestServlet extends HttpServlet {
 	public TestServlet() {
 		super();
 		String dataset = properties.getPropValue(FDProperties.DATASET);
-		String faceCascade = properties.getPropValue(FDProperties.FACE_CASCADE_URL);
-		String eyeCascade = properties.getPropValue(FDProperties.EYE_CASCADE_URL);
-		testService = new TestService(dataset,faceCascade,eyeCascade);
+		
+		testService = new TestService(dataset);
+		//Agrego los servicios disponibles
+//		String faceCascade = properties.getPropValue(FDProperties.FACE_CASCADE_URL);
+//		String eyeCascade = properties.getPropValue(FDProperties.EYE_CASCADE_URL);
+//		ts.addService(new OpenCVProcessor(faceCascade, eyeCascade));
+		testService.addService(new FacePlusPlus(FacePlusPlus.DEFAULT_ATTRIBUTES));
 	}
 
 	/**

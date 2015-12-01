@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import com.cloud.common.NativeLibraries;
+
 
 /**
  * Singleton para obtener parametros de configuración de archivo workflow.properties
@@ -33,7 +35,9 @@ public class FDProperties {
 	/**
 	 * Constructor por defecto, protegido por clase Singleton
 	 */
-	protected FDProperties(){}
+	protected FDProperties(){
+		NativeLibraries.loadLibraries();
+	}
 	
 	/**
 	 * Devuelve la instancia del singleton

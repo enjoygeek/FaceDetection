@@ -29,7 +29,6 @@ public class Image {
 	private String uri;
 	private int width;
 	private int height;
-	private String extensionImage;
 	@JsonIgnore
 	private File file;
 	private Mat image;

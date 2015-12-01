@@ -1,11 +1,13 @@
 package com.cloud.presentation;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.cloud.dto.ProcessResult;
+import com.cloud.remote.FacePlusPlus;
 import com.cloud.service.TestService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,10 +23,22 @@ public class MainApp {
 				.getPropValue(FDProperties.FACE_CASCADE_URL);
 		String eyeCascade = properties
 				.getPropValue(FDProperties.EYE_CASCADE_URL);
-
+		
+		if (!new File(faceCascade).exists()){			
+			throw new ExceptionInInitializerError("Face-Classifier not found");
+		}
+		if (!new File(eyeCascade).exists()){
+			throw new ExceptionInInitializerError("Eye-Classifier not found");
+		}
+		
+		
 		List<ProcessResult> salida = new ArrayList<ProcessResult>();
-		try {
-			TestService ts = new TestService(dataset, faceCascade, eyeCascade);
+		try {			
+			TestService ts = new TestService(dataset);
+			//Agrego los servicios disponibles
+			//ts.addService(new OpenCVProcessor(faceCascade, eyeCascade));
+			ts.addService(new FacePlusPlus(FacePlusPlus.DEFAULT_ATTRIBUTES));
+			
 			for (ProcessResult pr : ts.test()) {
 				salida.add(pr);
 			}

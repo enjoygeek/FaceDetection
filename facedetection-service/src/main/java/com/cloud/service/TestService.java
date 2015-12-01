@@ -10,36 +10,31 @@ import com.cloud.common.IService;
 import com.cloud.common.dataset.BioID;
 import com.cloud.dto.Image;
 import com.cloud.dto.ProcessResult;
-import com.cloud.local.OpenCVProcessor;
 
 public class TestService {
 
 	protected static Logger logger = Logger.getGlobal();
 	
 	private String dataset;
-	private String face_cascade_url;
-	private String eyes_cascade_url;
 	
 	private List<Image> images;
-	private IService[] services;
+	private List<IService> services;
 
-	public TestService(String dataset, String faceCascadeClassifier, String eyeCascadeClassifier) throws ExceptionInInitializerError{
+	public TestService(String dataset) throws ExceptionInInitializerError{
 		this.dataset = dataset;
 		//TODO: Cargar desde el archivo de configuracion
 		if (!new File(dataset).exists()){
 			throw new ExceptionInInitializerError("Dataset not found");
 		}
-		if (!new File(faceCascadeClassifier).exists()){			
-			throw new ExceptionInInitializerError("Face-Classifier not found");
-		}
-		if (!new File(eyeCascadeClassifier).exists()){
-			throw new ExceptionInInitializerError("Eye-Classifier not found");
-		}
-		face_cascade_url = faceCascadeClassifier;
-		eyes_cascade_url = eyeCascadeClassifier;
+		
 		 //new FacePlusPlus(FacePlusPlus.DEFAULT_ATTRIBUTES),
-		services = new IService[] { new OpenCVProcessor(face_cascade_url,eyes_cascade_url) };
+		//services = new IService[] { new OpenCVProcessor(face_cascade_url,eyes_cascade_url) };
+		services = new ArrayList<IService>();
 		images = BioID.loadImages(this.dataset);		
+	}
+	
+	public void addService(IService service){
+		this.services.add(service);
 	}
 
 	public List<ProcessResult> test() {
