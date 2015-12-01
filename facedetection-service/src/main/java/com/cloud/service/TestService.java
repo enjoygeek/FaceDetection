@@ -1,5 +1,6 @@
 package com.cloud.service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -22,9 +23,18 @@ public class TestService {
 	private List<Image> images;
 	private IService[] services;
 
-	public TestService(String dataset, String faceCascadeClassifier, String eyeCascadeClassifier) {
+	public TestService(String dataset, String faceCascadeClassifier, String eyeCascadeClassifier) throws ExceptionInInitializerError{
 		this.dataset = dataset;
 		//TODO: Cargar desde el archivo de configuracion
+		if (!new File(dataset).exists()){
+			throw new ExceptionInInitializerError("Dataset not found");
+		}
+		if (!new File(faceCascadeClassifier).exists()){			
+			throw new ExceptionInInitializerError("Face-Classifier not found");
+		}
+		if (!new File(eyeCascadeClassifier).exists()){
+			throw new ExceptionInInitializerError("Eye-Classifier not found");
+		}
 		face_cascade_url = faceCascadeClassifier;
 		eyes_cascade_url = eyeCascadeClassifier;
 		 //new FacePlusPlus(FacePlusPlus.DEFAULT_ATTRIBUTES),
