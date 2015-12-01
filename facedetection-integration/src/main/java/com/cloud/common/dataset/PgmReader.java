@@ -12,11 +12,8 @@ public class PgmReader {
 	private static final int MAXVAL = 255;
 
 	public static void setImageData(Image bI, String extension)	{
-		String path = bI.getUri()+extension;
-		System.out.println(path);
-		Mat imread = Imgcodecs.imread(path,1);
-		System.out.println(imread.cols()+","+imread.rows());
-
+		String path = bI.getUri()+extension;		
+		Mat imread = Imgcodecs.imread(path,1);		
 	}
 
 	public static void main(String[] args) {
