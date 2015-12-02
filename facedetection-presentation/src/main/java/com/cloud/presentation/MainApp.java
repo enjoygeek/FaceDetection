@@ -8,6 +8,8 @@ import java.util.logging.Logger;
 
 import com.cloud.dto.ProcessResult;
 import com.cloud.local.OpenCVProcessor;
+import com.cloud.service.Analisis;
+import com.cloud.service.Resumen;
 import com.cloud.service.TestService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,11 +37,15 @@ public class MainApp {
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage());
 		}
+		Resumen r = new Resumen();
+		r = Analisis.analizar(salida);
 		
 		//Imprime JSON
 		try {
 			ObjectMapper om = new ObjectMapper();
-			System.out.println(om.writeValueAsString(salida));
+			System.out.println(om.writerWithDefaultPrettyPrinter().writeValueAsString(salida));
+
+			System.out.println(om.writerWithDefaultPrettyPrinter().writeValueAsString(r));
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
