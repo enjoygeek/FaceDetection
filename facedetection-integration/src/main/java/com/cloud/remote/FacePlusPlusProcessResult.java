@@ -33,15 +33,15 @@ public class FacePlusPlusProcessResult extends ProcessResult {
 		FaceDetection faceDetection = new FaceDetection();
 		Map<String, Object> position = (Map<String, Object>) attributes
 				.get("position");
-		Map<String, Double> eye_left = (Map<String, Double>) position
+		Map<String, Integer> eye_left = (Map<String, Integer>) position
 				.get("eye_left");
-		Map<String, Double> eye_right = (Map<String, Double>) position
+		Map<String, Integer> eye_right = (Map<String, Integer>) position
 				.get("eye_right");
 
-		Double[] eyeLeft = new Double[] {
+		Integer[] eyeLeft = new Integer[] {
 				eye_left.get("x") / 100 * this.image.getWidth(),
 				eye_left.get("y") / 100 * this.image.getHeight(), };
-		Double[] eyeRight = new Double[] {
+		Integer[] eyeRight = new Integer[] {
 				eye_right.get("x") / 100 * this.image.getWidth(),
 				eye_right.get("y") / 100 * this.image.getHeight(), };
 		Coordinate2D ojoIzquierdo = new Coordinate2D(eyeLeft[0], eyeLeft[1]);
@@ -63,7 +63,7 @@ public class FacePlusPlusProcessResult extends ProcessResult {
 		// For each face, recover eye positions
 		for (Object face : faces) {
 			Map<String, Object> attributes = (Map<String, Object>) face;
-			this.faces.add(parseFace(attributes));
+			this.image.addDetections(parseFace(attributes));
 		}
 
 	}

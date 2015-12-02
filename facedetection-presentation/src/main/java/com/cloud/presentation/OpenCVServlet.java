@@ -12,7 +12,6 @@ import com.cloud.common.NativeLibraries;
 import com.cloud.dto.Image;
 import com.cloud.dto.ProcessResult;
 import com.cloud.local.OpenCVProcessor;
-import com.cloud.service.TestService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -59,13 +58,16 @@ public class OpenCVServlet extends HttpServlet {
 		String eyeCascade = properties.getPropValue(FDProperties.EYE_CASCADE_URL);
 
 		OpenCVProcessor ocv_p = new OpenCVProcessor(faceCascade,eyeCascade);
-		ocv_p.setfEscalar(Double.parseDouble(properties.getPropValue(FDProperties.F_ESCALAR)));
-		ocv_p.setMinNeighbors(Integer.parseInt(properties.getPropValue(FDProperties.MIN_NEIGHBORS)));
+		ocv_p.setfEscalarFace(Double.parseDouble(properties.getPropValue(FDProperties.F_ESCALAR_FACE)));
+		ocv_p.setfEscalarEye(Double.parseDouble(properties.getPropValue(FDProperties.F_ESCALAR_EYE)));
+		ocv_p.setMinNeighborsFace(Integer.parseInt(properties.getPropValue(FDProperties.MIN_NEIGHBORS_FACE)));
+		ocv_p.setMinNeighborsEye(Integer.parseInt(properties.getPropValue(FDProperties.MIN_NEIGHBORS_EYE)));
 		ocv_p.setMinPercentSizeFace(Integer.parseInt(properties.getPropValue(FDProperties.MIN_PERCENT_SIZE_FACE)));
 		ocv_p.setMaxPercentSizeFace(Integer.parseInt(properties.getPropValue(FDProperties.MAX_PERCENT_SIZE_FACE)));
 		ocv_p.setMinPercentSizeEye(Integer.parseInt(properties.getPropValue(FDProperties.MIN_PERCENT_SIZE_EYE)));
 		ocv_p.setMaxPercentSizeEye(Integer.parseInt(properties.getPropValue(FDProperties.MAX_PERCENT_SIZE_EYE)));
-		
+		ocv_p.setBlurEffect(Integer.parseInt(properties.getPropValue(FDProperties.BLUR_EFFECT)));		
+		ocv_p.setShowFaceDetection(properties.getPropValue(FDProperties.SHOW_FACE_OPENCV) == "true" || properties.getPropValue(FDProperties.SHOW_FACE_OPENCV) == "TRUE");
 		ProcessResult resultado = ocv_p.run(image);
 		
 		//Traduccion a JSON			

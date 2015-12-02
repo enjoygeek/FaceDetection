@@ -26,12 +26,19 @@ public class OpenCVProcessor implements IService {
 
 	private CascadeClassifier face_cascade;
 	private CascadeClassifier eyes_cascade;
-	private double fEscalar = 1.05; // Valores mas altos significan menos precisión.	
-	private int minNeighbors = 3;// Valores mas altos significan menos precisión pero mas fiabilidad
-	private int minPercentSizeFace; 
+	private double fEscalarFace; // Valores mas altos significan menos
+									// precisión.
+	private double fEscalarEye; // Valores mas altos significan menos precisión.
+	private int minNeighborsFace;// Valores mas altos significan menos precisión
+									// pero mas fiabilidad
+	private int minNeighborsEye;// Valores mas altos significan menos precisión
+								// pero mas fiabilidad
+	private int minPercentSizeFace;
 	private int maxPercentSizeFace;
-	private int minPercentSizeEye; 
+	private int minPercentSizeEye;
 	private int maxPercentSizeEye;
+	private boolean showFaceDetection;	
+	private int blurEffect;
 
 	public OpenCVProcessor(String face_cascade_url, String eyes_cascade_url) {
 		// //// Defino los clasificadores//////
@@ -39,7 +46,7 @@ public class OpenCVProcessor implements IService {
 		setFaceClassifier(new CascadeClassifier(face_cascade_url));
 		setEyesClassifier(new CascadeClassifier(eyes_cascade_url));
 	}
-		
+
 	public void setFaceClassifier(CascadeClassifier clasificador) {
 		this.face_cascade = clasificador;
 	}
@@ -61,8 +68,6 @@ public class OpenCVProcessor implements IService {
 		if (image == null)
 			return null;
 
-		
-
 		Coordinate2D leftEye, rightEye, nose, mouth;
 
 		MatOfRect faceDetections = new MatOfRect();
@@ -75,82 +80,63 @@ public class OpenCVProcessor implements IService {
 		// /////////////////////////////
 		// Comienzo detección de rostro
 		// /////////////////////////////
-		getFaceClassifier().detectMultiScale(image.getMatImage(),
-				faceDetections, fEscalar, minNeighbors, 0,
-				new Size(image.getWidth()*minPercentSizeFace/100, image.getHeight()*minPercentSizeFace/100),
-				new Size(image.getWidth()*maxPercentSizeFace/100, image.getHeight()*maxPercentSizeFace/100));
+		getFaceClassifier().detectMultiScale(image.getMatImage(), faceDetections, fEscalarFace, minNeighborsFace, 0,
+				new Size(image.getWidth() * minPercentSizeFace / 100, image.getHeight() * minPercentSizeFace / 100),
+				new Size(image.getWidth() * maxPercentSizeFace / 100, image.getHeight() * maxPercentSizeFace / 100));
 
 		List<FaceDetection> faces = new ArrayList<FaceDetection>();
 		for (int r = 0; r < faceDetections.toArray().length; r++) {
 			rect_face = faceDetections.toArray()[r];
 			faceDetection = new FaceDetection();
-			faceDetection.setBoundingBox(new Rectangle2D.Double(rect_face.x,
-					rect_face.y, rect_face.width, rect_face.height));
+			faceDetection.setBoundingBox(
+					new Rectangle2D.Double(rect_face.x, rect_face.y, rect_face.width, rect_face.height));
 			// /////////////////////////////
 			// Comienzo detección de ojos
 			// /////////////////////////////
 			leftEye = rightEye = nose = mouth = null; // Reinicio los puntos del
 														// rostro anterior
 
-			Mat faceROI = image.getMatImage().submat(
-					faceDetections.toArray()[r]);
+			Mat faceROI = image.getMatImage().submat(faceDetections.toArray()[r]);
 			Mat faceROI_Effect = setEffect(faceROI);
-			
-			getEyesClassifier().detectMultiScale(faceROI_Effect, eyeDetections,
-					1.015, 3, 0,
-					new Size(image.getWidth()* minPercentSizeEye / 100,image.getHeight()* minPercentSizeEye / 100),
-					new Size(image.getWidth()* maxPercentSizeEye / 100,image.getHeight()* maxPercentSizeEye / 100));
-			
+
+			getEyesClassifier().detectMultiScale(faceROI_Effect, eyeDetections, fEscalarEye, minNeighborsEye, 0,
+					new Size(image.getWidth() * minPercentSizeEye / 100, image.getHeight() * minPercentSizeEye / 100),
+					new Size(image.getWidth() * maxPercentSizeEye / 100, image.getHeight() * maxPercentSizeEye / 100));
 
 			if (eyeDetections.toArray().length > 1) {
 				sortEyes = sortRect(eyeDetections.toArray());
-				rightEye = new Coordinate2D(sortEyes[0].x + rect_face.x,
-						sortEyes[0].y + rect_face.y);
-				leftEye = new Coordinate2D(sortEyes[sortEyes.length - 1].x
-						+ rect_face.x, sortEyes[sortEyes.length - 1].y
-						+ rect_face.y);
+				rightEye = new Coordinate2D(sortEyes[0].x + rect_face.x, sortEyes[0].y + rect_face.y);
+				leftEye = new Coordinate2D(sortEyes[sortEyes.length - 1].x + rect_face.x,
+						sortEyes[sortEyes.length - 1].y + rect_face.y);
 				// El ultimo en el eje x es siempre el ojo izquierdo de la
 				// persona
 
 				if (sortEyes.length == 3) {
 					// Se detecto la nariz
-					nose = new Coordinate2D(sortEyes[1].x + rect_face.x,
-							sortEyes[1].y + rect_face.y);
+					nose = new Coordinate2D(sortEyes[1].x + rect_face.x, sortEyes[1].y + rect_face.y);
 				} else if (sortEyes.length == 4) {
 					// Se detecto nariz y boca
 					if (sortEyes[1].y < sortEyes[2].y) {
-						nose = new Coordinate2D(sortEyes[1].x + rect_face.x,
-								sortEyes[1].y + rect_face.y);
-						mouth = new Coordinate2D(sortEyes[2].x + rect_face.x,
-								sortEyes[2].y + rect_face.y);
+						nose = new Coordinate2D(sortEyes[1].x + rect_face.x, sortEyes[1].y + rect_face.y);
+						mouth = new Coordinate2D(sortEyes[2].x + rect_face.x, sortEyes[2].y + rect_face.y);
 					} else {
-						mouth = new Coordinate2D(sortEyes[1].x + rect_face.x,
-								sortEyes[1].y + rect_face.y);
-						nose = new Coordinate2D(sortEyes[2].x + rect_face.x,
-								sortEyes[2].y + rect_face.y);
+						mouth = new Coordinate2D(sortEyes[1].x + rect_face.x, sortEyes[1].y + rect_face.y);
+						nose = new Coordinate2D(sortEyes[2].x + rect_face.x, sortEyes[2].y + rect_face.y);
 					}
 				}
 			}
-
-			else {
-				System.out.println("Se detectaron: "
-						+ eyeDetections.toArray().length + " puntos");
+			if (showFaceDetection){
+				for (int eyes = 0; eyes < eyeDetections.toArray().length; eyes++) {
+					// Dibujar los ojos
+					int radius = 5;
+					Point center_Eye = new Point(eyeDetections.toArray()[eyes].x, eyeDetections.toArray()[eyes].y);
+					org.opencv.imgproc.Imgproc.circle(faceROI, center_Eye, radius,
+							new Scalar(Math.min(5 * eyes, 255), Math.min(30 * eyes, 255), Math.min(75 * eyes, 255)), 5, 5,
+							0);
+				} // Mostrar la cara analizada
+				Imshow im = new Imshow("Face number: " + r);
+				im.showImage(faceROI);
 			}
-
-			for (int eyes = 0; eyes < eyeDetections.toArray().length; eyes++) {
-				// Dibujar los ojos
-				int radius = 5;
-				Point center_Eye = new Point(eyeDetections.toArray()[eyes].x,
-						eyeDetections.toArray()[eyes].y);
-				org.opencv.imgproc.Imgproc.circle(
-						faceROI,
-						center_Eye,
-						radius,
-						new Scalar(Math.min(5 * eyes, 255), Math.min(30 * eyes,255), 
-								Math.min(75 * eyes, 255)), 5, 5, 0);
-			} // Mostrar la cara analizada
-			Imshow im = new Imshow("Face number: " + r);
-			im.showImage(faceROI);
 
 			faceDetection.setLeftEye(leftEye);
 			faceDetection.setRightEye(rightEye);
@@ -159,18 +145,13 @@ public class OpenCVProcessor implements IService {
 			faces.add(faceDetection);
 		}
 
+		image.setDetections(faces);
 		long fin = new java.util.Date().getTime() - comienzo.getTime();
 		Map<String, Object> resultado = new HashMap<String, Object>();
 		resultado.put("elapsedTime", fin);
-		resultado.put("faces", faces);
-		resultado.put("path", image.getFile().getName());
-		resultado.put("width", image.getWidth());
-		resultado.put("height", image.getHeight());
-		resultado.put("size", image.getFileSize());
 		resultado.put("image", image);
-
-		OpenCVProcessResult openCVProcessResult = new OpenCVProcessResult(
-				"OpenCV - " + face_cascade.toString());
+		String endpoint = "OpenCV - " + face_cascade.toString();
+		OpenCVProcessResult openCVProcessResult = new OpenCVProcessResult(endpoint);
 		openCVProcessResult.process(resultado);
 
 		// Devolver processResult correcto
@@ -199,50 +180,36 @@ public class OpenCVProcessor implements IService {
 		return eyeDetectionSorted;
 	}
 
-	@SuppressWarnings("unused")
 	private Mat setEffect(Mat imagenOrigen) {
-		Mat imagenDestino = imagenOrigen;
+		Mat imagenDestino = new Mat();
 		// ***Efectos sobre la imagen*******/
 		/******* Blur *******/
-		 //Imgproc.GaussianBlur(imagenOrigen, imagenDestino, new Size(9,9),0);		 
+		// Imgproc.GaussianBlur(imagenOrigen, imagenDestino, new Size(9,9),0);
 
 		/******* Gray *******/
-		 //Imgproc.cvtColor(imagenOrigen, imagenDestino, Imgproc.COLOR_BGR2GRAY);
-		 
-		 /******* BLUR *******/
-		 Imgproc.blur(imagenOrigen, imagenDestino, new Size(15, 15));		
+		// Imgproc.cvtColor(imagenOrigen, imagenDestino,
+		// Imgproc.COLOR_BGR2GRAY);
+
+		/******* BLUR *******/
+		if (getBlurEffect() > 0)
+			Imgproc.blur(imagenOrigen, imagenDestino, new Size(getBlurEffect(), getBlurEffect()));
+		
 		/******* Canny *******/
 		// Imgproc.Canny(imagenOrigen, imagenDestino, 10, 100);
-		 
 
 		/******* Threshold *******/
-		//Imgproc.threshold(imagenOrigen, imagenDestino, 80, 150, 1);		
-		
-		
-		Imshow im = new Imshow("Face with effect");
-		 im.showImage(imagenDestino);
+		// Imgproc.threshold(imagenOrigen, imagenDestino, 80, 150, 1);
+
+		if (showFaceDetection){
+			Imshow im = new Imshow("Face with effect");
+			im.showImage(imagenDestino);
+		}
 		return imagenDestino;
 	}
 
 	@Override
 	public ProcessResult run(Image image) {
 		return process(image);
-	}
-
-	public double getfEscalar() {
-		return fEscalar;
-	}
-
-	public void setfEscalar(double fEscalar) {
-		this.fEscalar = fEscalar;
-	}
-
-	public int getMinNeighbors() {
-		return minNeighbors;
-	}
-
-	public void setMinNeighbors(int minNeighbors) {
-		this.minNeighbors = minNeighbors;
 	}
 
 	public int getMinPercentSizeFace() {
@@ -275,5 +242,55 @@ public class OpenCVProcessor implements IService {
 
 	public void setMaxPercentSizeEye(int maxPercentSizeEye) {
 		this.maxPercentSizeEye = maxPercentSizeEye;
-	}	
+	}
+
+	public double getfEscalarFace() {
+		return fEscalarFace;
+	}
+
+	public void setfEscalarFace(double fEscalarFace) {
+		this.fEscalarFace = fEscalarFace;
+	}
+
+	public double getfEscalarEye() {
+		return fEscalarEye;
+	}
+
+	public void setfEscalarEye(double fEscalarEye) {
+		this.fEscalarEye = fEscalarEye;
+	}
+
+	public int getMinNeighborsFace() {
+		return minNeighborsFace;
+	}
+
+	public void setMinNeighborsFace(int minNeighborsFace) {
+		this.minNeighborsFace = minNeighborsFace;
+	}
+
+	public int getMinNeighborsEye() {
+		return minNeighborsEye;
+	}
+
+	public void setMinNeighborsEye(int minNeighborsEye) {
+		this.minNeighborsEye = minNeighborsEye;
+	}
+	
+	public boolean isShowFaceDetection() {
+		return showFaceDetection;
+	}
+
+	public void setShowFaceDetection(boolean showFaceDetection) {
+		System.out.println(showFaceDetection);
+		this.showFaceDetection = showFaceDetection;
+	}
+
+	public int getBlurEffect() {
+		return blurEffect;
+	}
+
+	public void setBlurEffect(int blurEffect) {
+		this.blurEffect = blurEffect;
+	}
+
 }

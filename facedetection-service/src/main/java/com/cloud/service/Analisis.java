@@ -14,7 +14,7 @@ public class Analisis {
 		
 		
 			
-		int totalCarasDetectadas = resultados.stream().mapToInt(pr -> pr.getFaceCount()).sum();
+	//	int totalCarasDetectadas = resultados.stream().mapToInt(pr -> pr.getFaceCount()).sum();
 		
 		
 		

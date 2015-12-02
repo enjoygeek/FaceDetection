@@ -9,6 +9,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -24,7 +26,7 @@ import com.cloud.common.NativeLibraries;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Image {
-	
+
 	public static String BASE_PATH_TO_DOWNLOAD = "";
 	private String uri;
 	private int width;
@@ -32,49 +34,53 @@ public class Image {
 	@JsonIgnore
 	private File file;
 	private Mat image;
+	private List<FaceDetection> refDetections = new ArrayList<FaceDetection>();
+	private List<FaceDetection> detections = new ArrayList<FaceDetection>();
 
 	public Image() {
 	};
 
-	
-	public Image(String uri,int width,int height) throws Exception {
+	public Image(String uri, int width, int height) throws Exception {
 		super();
-		String fileName = this.downloadImage(uri); //Si es una imagen que está en la web, la descarga y retorna el path local
-		this.setUri(fileName);		
+		String fileName = this.downloadImage(uri); // Si es una imagen que está
+													// en la web, la descarga y
+													// retorna el path local
+		this.setUri(fileName);
 		image = Imgcodecs.imread(fileName, 1);
-		if (width == -1){
+		if (width == -1) {
 			this.setWidth(image.width());
 			this.setHeight(image.height());
-		}			
-		else{
+		} else {
 			this.setWidth(width);
 			this.setHeight(height);
-		}						
-		file = new File(fileName);
-	}
-	
-	public Image(String uri) throws Exception {
-		super();
-		String fileName = this.downloadImage(uri); //Si es una imagen que está en la web, la descarga y retorna el path local
-		this.setUri(fileName);		
-		image = Imgcodecs.imread(fileName, 1);
-		if (width == -1){
-			this.setWidth(image.width());
-			this.setHeight(image.height());
-		}			
-		else{
-			this.setWidth(width);
-			this.setHeight(height);
-		}						
+		}
 		file = new File(fileName);
 	}
 
-	private String downloadImage(String imageUrl) throws Exception {		
-		String protocolo = imageUrl; 
-		if (protocolo.toLowerCase().startsWith("http:") || protocolo.toLowerCase().startsWith("https:")  || protocolo.toLowerCase().startsWith("www.")){
-			if(Image.BASE_PATH_TO_DOWNLOAD == null || Image.BASE_PATH_TO_DOWNLOAD.isEmpty())
+	public Image(String uri) throws Exception {
+		super();
+		String fileName = this.downloadImage(uri); // Si es una imagen que está
+													// en la web, la descarga y
+													// retorna el path local
+		this.setUri(fileName);
+		image = Imgcodecs.imread(fileName, 1);
+		if (width == -1) {
+			this.setWidth(image.width());
+			this.setHeight(image.height());
+		} else {
+			this.setWidth(width);
+			this.setHeight(height);
+		}
+		file = new File(fileName);
+	}
+
+	private String downloadImage(String imageUrl) throws Exception {
+		String protocolo = imageUrl;
+		if (protocolo.toLowerCase().startsWith("http:") || protocolo.toLowerCase().startsWith("https:")
+				|| protocolo.toLowerCase().startsWith("www.")) {
+			if (Image.BASE_PATH_TO_DOWNLOAD == null || Image.BASE_PATH_TO_DOWNLOAD.isEmpty())
 				throw new Exception("Missing local upload path");
-			try {				
+			try {
 				URL url = new URL(imageUrl);
 				InputStream in = new BufferedInputStream(url.openStream());
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -86,9 +92,9 @@ public class Image {
 				out.close();
 				in.close();
 				byte[] response = out.toByteArray();
-	
+
 				Random random = new Random();
-				String imageFormat = imageUrl.substring(imageUrl.lastIndexOf(".")+1);
+				String imageFormat = imageUrl.substring(imageUrl.lastIndexOf(".") + 1);
 				String filename = BASE_PATH_TO_DOWNLOAD + "\\" + random.nextLong() + "." + imageFormat;
 				FileOutputStream fos = new FileOutputStream(filename);
 				fos.write(response);
@@ -98,13 +104,11 @@ public class Image {
 				e.printStackTrace();
 			}
 			return "";
-		}
-		else
-		{			
+		} else {
 			return imageUrl;
 		}
 	}
-	
+
 	public String getUri() {
 		return uri;
 	}
@@ -124,7 +128,7 @@ public class Image {
 	public void setHeight(int height) {
 		this.height = height;
 	}
-		
+
 	public File getFile() {
 		return file;
 	}
@@ -169,10 +173,10 @@ public class Image {
 	}
 
 	@JsonIgnore
-	public Mat getMatImage(){
+	public Mat getMatImage() {
 		return image;
 	}
-	
+
 	@JsonIgnore
 	public BufferedImage getImage() {
 		NativeLibraries.loadLibraries();
@@ -201,8 +205,31 @@ public class Image {
 
 	public String getExtensionImage() {
 		return FilenameUtils.getExtension(uri);
-		//return uri.substring(uri.lastIndexOf('.'), uri.length());
+		// return uri.substring(uri.lastIndexOf('.'), uri.length());
 	}
-	
-	
+
+	public List<FaceDetection> getRefDetections() {
+		return refDetections;
+	}
+
+	public void setRefDetections(List<FaceDetection> refDetections) {
+		this.refDetections.addAll(refDetections);
+	}
+
+	public List<FaceDetection> getDetections() {
+		return detections;
+	}
+
+	public void setDetections(List<FaceDetection> detections) {
+		this.detections.addAll(detections);
+	}
+
+	public void addRefDetections(FaceDetection fRefDetection) {
+		this.refDetections.add(fRefDetection);
+	}
+
+	public void addDetections(FaceDetection fDetection) {
+		this.refDetections.add(fDetection);
+	}
+
 }

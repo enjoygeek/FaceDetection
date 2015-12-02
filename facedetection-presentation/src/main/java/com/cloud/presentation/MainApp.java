@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 
 import com.cloud.dto.ProcessResult;
 import com.cloud.local.OpenCVProcessor;
-import com.cloud.remote.FacePlusPlus;
 import com.cloud.service.TestService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,8 +19,7 @@ public class MainApp {
 	public static void main(String[] args) {
 		FDProperties properties = FDProperties.getInstance();
 		String dataset = properties.getPropValue(FDProperties.DATASET);
-		
-		
+				
 		List<ProcessResult> salida = new ArrayList<ProcessResult>();
 		try {			
 			OpenCVProcessor ocv_p = initOpenCV_Parameters(properties);
@@ -59,12 +57,16 @@ public class MainApp {
 		}
 		
 		OpenCVProcessor ocv_p = new OpenCVProcessor(faceCascade,eyeCascade); 		
-		ocv_p.setfEscalar(Double.parseDouble(properties.getPropValue(FDProperties.F_ESCALAR)));
-		ocv_p.setMinNeighbors(Integer.parseInt(properties.getPropValue(FDProperties.MIN_NEIGHBORS)));
+		ocv_p.setfEscalarFace(Double.parseDouble(properties.getPropValue(FDProperties.F_ESCALAR_FACE)));
+		ocv_p.setfEscalarEye(Double.parseDouble(properties.getPropValue(FDProperties.F_ESCALAR_EYE)));
+		ocv_p.setMinNeighborsFace(Integer.parseInt(properties.getPropValue(FDProperties.MIN_NEIGHBORS_FACE)));
+		ocv_p.setMinNeighborsEye(Integer.parseInt(properties.getPropValue(FDProperties.MIN_NEIGHBORS_EYE)));
 		ocv_p.setMinPercentSizeFace(Integer.parseInt(properties.getPropValue(FDProperties.MIN_PERCENT_SIZE_FACE)));
 		ocv_p.setMaxPercentSizeFace(Integer.parseInt(properties.getPropValue(FDProperties.MAX_PERCENT_SIZE_FACE)));
 		ocv_p.setMinPercentSizeEye(Integer.parseInt(properties.getPropValue(FDProperties.MIN_PERCENT_SIZE_EYE)));
 		ocv_p.setMaxPercentSizeEye(Integer.parseInt(properties.getPropValue(FDProperties.MAX_PERCENT_SIZE_EYE)));
+		ocv_p.setBlurEffect(Integer.parseInt(properties.getPropValue(FDProperties.BLUR_EFFECT)));			
+		ocv_p.setShowFaceDetection((properties.getPropValue(FDProperties.SHOW_FACE_OPENCV)).equals("true") || (properties.getPropValue(FDProperties.SHOW_FACE_OPENCV)).equals("TRUE"));
 		return ocv_p;
 	}
 }

@@ -29,12 +29,16 @@ public class FDProperties {
 	public static final String FACE_CASCADE_URL = "FACE_CASCADE_URL";
 	public static final String EYE_CASCADE_URL = "EYE_CASCADE_URL";
 	public static final String DOWNLOAD_PATH = "DOWNLOAD_PATH";
-	public static final String F_ESCALAR = "F_ESCALAR";
-	public static final String MIN_NEIGHBORS = "MIN_NEIGHBORS";
+	public static final String F_ESCALAR_FACE = "F_ESCALAR_FACE";
+	public static final String F_ESCALAR_EYE = "F_ESCALAR_EYE";
+	public static final String MIN_NEIGHBORS_FACE = "MIN_NEIGHBORS_FACE";
+	public static final String MIN_NEIGHBORS_EYE = "MIN_NEIGHBORS_EYE";
 	public static final String MIN_PERCENT_SIZE_FACE = "MIN_PERCENT_SIZE_FACE";
 	public static final String MAX_PERCENT_SIZE_FACE = "MAX_PERCENT_SIZE_FACE";
 	public static final String MIN_PERCENT_SIZE_EYE = "MIN_PERCENT_SIZE_EYE";
 	public static final String MAX_PERCENT_SIZE_EYE = "MAX_PERCENT_SIZE_EYE";
+	public static final String BLUR_EFFECT = "BLUR_EFFECT";
+	public static final String SHOW_FACE_OPENCV = "SHOW_FACE_OPENCV";
 
 	/**
 	 * Constructor por defecto, protegido por clase Singleton

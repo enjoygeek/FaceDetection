@@ -1,6 +1,5 @@
 package com.cloud.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,12 +10,13 @@ public abstract class ProcessResult {
 	@JsonIgnore
 	private String serviceOutput;
 	private String endpoint;
+	@JsonIgnore
 	protected Image image;
 	@JsonIgnore
 	protected long startTime;
 	@JsonIgnore
 	protected long endTime;
-	protected List<FaceDetection> faces = new ArrayList<FaceDetection>();
+	//protected List<FaceDetection> faces = new ArrayList<FaceDetection>();
 
 	public ProcessResult(String endpoint) {
 		this.endpoint = endpoint;
@@ -63,15 +63,15 @@ public abstract class ProcessResult {
 	}
 
 	public int getFaceCount() {
-		return faces.size();
+		return image.getDetections().size();
 	}
 
 	public List<FaceDetection> getFaces() {
-		return faces;
+		return image.getDetections();
 	}
-
-	public void setFaces(List<FaceDetection> faces) {
-		this.faces = faces;
+	
+	public List<FaceDetection> getFacesReference() {
+		return image.getRefDetections();
 	}
 
 	public abstract void process(Map<String, Object> processResult) throws Exception;
