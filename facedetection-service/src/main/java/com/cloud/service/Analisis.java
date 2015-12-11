@@ -67,7 +67,8 @@ public class Analisis {
 		Resumen resumen = new Resumen();		
 		resumen.setCantCarasDetectadas(cantCarasDetectadas);
 		resumen.setCantCarasReferencia(cantCarasReferencia);
-		resumen.setPorcentaje(cantCarasDetectadas * 100 / cantCarasReferencia);
+		if (cantCarasReferencia > 0)
+			resumen.setPorcentaje(cantCarasDetectadas * 100 / cantCarasReferencia);
 		resumen.setDistancias(distancias);
 		return resumen;
 	}

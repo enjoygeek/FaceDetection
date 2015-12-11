@@ -38,7 +38,8 @@ public class Resumen {
 	}
 
 	public void setDistancias(HashMap<String, List<Distancias>> distancias) {
-		this.distancias = distancias;
+		this.distancias = distancias;		
+		
 	}
 
 	public int getPorcentaje() {

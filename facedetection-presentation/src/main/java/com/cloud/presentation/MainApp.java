@@ -52,6 +52,7 @@ public class MainApp {
 		}
 		System.out.println("Total caras detectadas: " + r.getCantCarasDetectadas());
 		System.out.println("Total caras referenciadas: " + r.getCantCarasReferencia());
+		System.out.println("Porcenta de efectividad: " + r.getPorcentaje());
 		
 	}
 
