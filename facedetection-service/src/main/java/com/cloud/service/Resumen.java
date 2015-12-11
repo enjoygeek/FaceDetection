@@ -9,6 +9,8 @@ public class Resumen {
 
 	private int cantCarasReferencia;
 	private int cantCarasDetectadas;
+	private int porcentaje;
+	private Double promedioDistancia;
 	
 	HashMap<String, List<Distancias>> distancias;
 
@@ -37,6 +39,22 @@ public class Resumen {
 
 	public void setDistancias(HashMap<String, List<Distancias>> distancias) {
 		this.distancias = distancias;
+	}
+
+	public int getPorcentaje() {
+		return porcentaje;
+	}
+
+	public void setPorcentaje(int porcentaje) {
+		this.porcentaje = porcentaje;
+	}
+
+	public Double getPromedioDistancia() {
+		return promedioDistancia;
+	}
+
+	public void setPromedioDistancia(Double promedioDistancia) {
+		this.promedioDistancia = promedioDistancia;
 	}
 
 }

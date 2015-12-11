@@ -23,26 +23,35 @@ public class Analisis {
 		HashMap<String, List<Distancias>> distancias = new HashMap<>(); 
 		List<Distancias> distanciasPr ;
 		Double d1, d2,tmpD1,tmpD2;
-		int xLDet,yLDet,xLRef,yLRef;
-		int xRDet,yRDet,xRRef,yRRef;
+		Integer xLDet,yLDet,xLRef,yLRef;
+		Integer xRDet,yRDet,xRRef,yRRef;
 		for (ProcessResult pr : resultados) {
 			distanciasPr = new ArrayList<Distancias>();
 			for (int i = 0; i < pr.getImage().getDetections().size(); i++) { // Itero por las caras detectadas de la imagen pr
-				xLDet = pr.getImage().getDetections().get(i).getLeftEye().getX();
-				yLDet = pr.getImage().getDetections().get(i).getLeftEye().getY();
-				xRDet = pr.getImage().getDetections().get(i).getLeftEye().getX();
-				yRDet = pr.getImage().getDetections().get(i).getLeftEye().getY();
+				xLDet = pr.getImage().getDetections().get(i).getLeftEye() != null ? pr.getImage().getDetections().get(i).getLeftEye().getX() : null;
+				yLDet = pr.getImage().getDetections().get(i).getLeftEye() != null ? pr.getImage().getDetections().get(i).getLeftEye().getY() : null;
+				xRDet = pr.getImage().getDetections().get(i).getLeftEye() != null ? pr.getImage().getDetections().get(i).getLeftEye().getX() : null;
+				yRDet = pr.getImage().getDetections().get(i).getLeftEye() != null ? pr.getImage().getDetections().get(i).getLeftEye().getY() : null;
 				d1 = null;//Reinicio valores previos
 				d2 = null;
 				for (int j = 0; j < pr.getImage().getRefDetections().size(); j++) {
-					// Ojo izquierdo
-					xLRef = pr.getImage().getRefDetections().get(j).getLeftEye().getX();
-					yLRef = pr.getImage().getRefDetections().get(j).getLeftEye().getY();
-					tmpD1 = calcularDistancia(xLDet,yLDet,xLRef, yLRef);
-					// Ojo derecho
-					xRRef = pr.getImage().getRefDetections().get(j).getRightEye().getX();
-					yRRef = pr.getImage().getRefDetections().get(j).getRightEye().getY();
-					tmpD2 = calcularDistancia(xRDet,yRDet,xRRef,yRRef);
+					// Ojo izquierdo					
+					if ((xLDet != null) || (yLDet != null)){
+						xLRef = pr.getImage().getRefDetections().get(j).getLeftEye().getX();
+						yLRef = pr.getImage().getRefDetections().get(j).getLeftEye().getY();
+						tmpD1 = calcularDistancia(xLDet,yLDet,xLRef, yLRef);
+					}
+					else
+						tmpD1 = -1.0;
+					// Ojo derecho					
+					if ((xRDet != null) || (yRDet != null)){
+						xRRef = pr.getImage().getRefDetections().get(j).getRightEye().getX();
+						yRRef = pr.getImage().getRefDetections().get(j).getRightEye().getY();
+						tmpD2 = calcularDistancia(xRDet,yRDet,xRRef,yRRef);
+					}
+					else
+						tmpD2 = -1.0;
+					// Mejor Distancia
 					if (d1 == null && d2 == null) {
 						d1 = tmpD1;
 						d2 = tmpD2;
@@ -58,6 +67,7 @@ public class Analisis {
 		Resumen resumen = new Resumen();		
 		resumen.setCantCarasDetectadas(cantCarasDetectadas);
 		resumen.setCantCarasReferencia(cantCarasReferencia);
+		resumen.setPorcentaje(cantCarasDetectadas * 100 / cantCarasReferencia);
 		resumen.setDistancias(distancias);
 		return resumen;
 	}

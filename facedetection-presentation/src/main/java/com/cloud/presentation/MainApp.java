@@ -50,6 +50,9 @@ public class MainApp {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		System.out.println("Total caras detectadas: " + r.getCantCarasDetectadas());
+		System.out.println("Total caras referenciadas: " + r.getCantCarasReferencia());
+		
 	}
 
 	private static OpenCVProcessor initOpenCV_Parameters(FDProperties properties) {

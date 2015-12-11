@@ -15,6 +15,10 @@ public class FaceDetection {
 	
 	public FaceDetection() {
 		this.boundingBox = new Rectangle2D.Double();
+		leftEye = null;
+		rightEye = null;
+		nose = null;
+		mouth = null;
 	}
 
 	@JsonIgnore
