@@ -39,6 +39,7 @@ public class FDProperties {
 	public static final String MAX_PERCENT_SIZE_EYE = "MAX_PERCENT_SIZE_EYE";
 	public static final String BLUR_EFFECT = "BLUR_EFFECT";
 	public static final String SHOW_FACE_OPENCV = "SHOW_FACE_OPENCV";
+	public static final String RESULTADOS = "RESULTADOS";
 
 	/**
 	 * Constructor por defecto, protegido por clase Singleton

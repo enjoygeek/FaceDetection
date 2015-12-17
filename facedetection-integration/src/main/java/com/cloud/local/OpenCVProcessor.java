@@ -101,8 +101,7 @@ public class OpenCVProcessor implements IService {
 
 			getEyesClassifier().detectMultiScale(faceROI_Effect, eyeDetections, fEscalarEye, minNeighborsEye, 0,
 					new Size(image.getWidth() * minPercentSizeEye / 100, image.getHeight() * minPercentSizeEye / 100),
-					new Size(image.getWidth() * maxPercentSizeEye / 100, image.getHeight() * maxPercentSizeEye / 100));
-
+					new Size(image.getWidth() * maxPercentSizeEye / 100, image.getHeight() * maxPercentSizeEye / 100));			
 			if (eyeDetections.toArray().length > 1) {
 				sortEyes = sortRect(eyeDetections.toArray());
 				rightEye = new Coordinate2D(sortEyes[0].x + rect_face.x, sortEyes[0].y + rect_face.y);
@@ -191,15 +190,18 @@ public class OpenCVProcessor implements IService {
 		// Imgproc.COLOR_BGR2GRAY);
 
 		/******* BLUR *******/
-		if (getBlurEffect() > 0)
+		if (getBlurEffect() > 0){
+			//System.out.println("Bluur: "+getBlurEffect());
 			Imgproc.blur(imagenOrigen, imagenDestino, new Size(getBlurEffect(), getBlurEffect()));
-		
+		}
+		else
+			imagenDestino = imagenOrigen;
 		/******* Canny *******/
 		// Imgproc.Canny(imagenOrigen, imagenDestino, 10, 100);
 
 		/******* Threshold *******/
 		// Imgproc.threshold(imagenOrigen, imagenDestino, 80, 150, 1);
-
+		//System.out.println("ShowFaceDetection: "+showFaceDetection);
 		if (showFaceDetection){
 			Imshow im = new Imshow("Face with effect");
 			im.showImage(imagenDestino);
@@ -280,8 +282,7 @@ public class OpenCVProcessor implements IService {
 		return showFaceDetection;
 	}
 
-	public void setShowFaceDetection(boolean showFaceDetection) {
-		System.out.println(showFaceDetection);
+	public void setShowFaceDetection(boolean showFaceDetection) {		
 		this.showFaceDetection = showFaceDetection;
 	}
 

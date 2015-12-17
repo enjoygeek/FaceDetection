@@ -3,6 +3,7 @@ package com.cloud.remote;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -11,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StopWatch;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -41,6 +43,7 @@ public class FacePlusPlus implements IService {
 		parameters.put("url", image.getUri());
 		RestTemplate restTemplate = new RestTemplate();
 
+		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 		headers.add("X-Mashape-Key", xMashapeKey);
@@ -54,13 +57,20 @@ public class FacePlusPlus implements IService {
 		HttpEntity<String> entity = new HttpEntity<String>("parameters",
 				headers);
 				
+
+
 		//Time measure
+		StopWatch sw = new StopWatch();
+		sw.start("initializing");
 		resultado.setStartTime(System.nanoTime());
 		//Actual processing
 		ResponseEntity<String> resultString = restTemplate.exchange(builder.build()
 				.toUriString(), HttpMethod.GET, entity, String.class);
 		//End time measure
+		sw.stop();
+		
 		resultado.setEndTime(System.nanoTime());
+		System.out.println("taskInfo:"+sw.getTaskInfo() +" shortSumary: "+sw.shortSummary()+ "response_time=" + sw.prettyPrint());
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, Object> result = new HashMap<>();
