@@ -36,15 +36,22 @@ public class Image {
 	private Mat image;
 	private List<FaceDetection> refDetections = new ArrayList<FaceDetection>();
 	private List<FaceDetection> detections = new ArrayList<FaceDetection>();
+	private String remoteUri;
 
 	public Image() {
 	};
 
-	public Image(String uri, int width, int height) throws Exception {
+	public Image(String uri, int width, int height, Boolean download) throws Exception {
 		super();
-		String fileName = this.downloadImage(uri); // Si es una imagen que está
-													// en la web, la descarga y
-													// retorna el path local
+		String fileName = "";
+		if(download){
+			fileName = this.downloadImage(uri); // Si es una imagen que estï¿½
+													   // en la web, la descarga y
+													   // retorna el path local
+		}
+		else{
+			fileName = uri;
+		}
 		this.setUri(fileName);
 		image = Imgcodecs.imread(fileName, 1);
 		if (width == -1) {
@@ -59,7 +66,7 @@ public class Image {
 
 	public Image(String uri) throws Exception {
 		super();
-		String fileName = this.downloadImage(uri); // Si es una imagen que está
+		String fileName = this.downloadImage(uri); // Si es una imagen que estï¿½
 													// en la web, la descarga y
 													// retorna el path local
 		this.setUri(fileName);
@@ -73,6 +80,7 @@ public class Image {
 		}
 		file = new File(fileName);
 	}
+
 
 	private String downloadImage(String imageUrl) throws Exception {
 		String protocolo = imageUrl;
@@ -93,12 +101,13 @@ public class Image {
 				in.close();
 				byte[] response = out.toByteArray();
 
-				Random random = new Random();
-				String imageFormat = imageUrl.substring(imageUrl.lastIndexOf(".") + 1);
-				String filename = BASE_PATH_TO_DOWNLOAD + "\\" + random.nextLong() + "." + imageFormat;
+				
+				String imageFileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+				String filename = BASE_PATH_TO_DOWNLOAD + File.separator + imageFileName;
 				FileOutputStream fos = new FileOutputStream(filename);
 				fos.write(response);
 				fos.close();
+				remoteUri = imageUrl;
 				return filename;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -229,7 +238,19 @@ public class Image {
 	}
 
 	public void addDetections(FaceDetection fDetection) {
-		this.refDetections.add(fDetection);
+		this.detections.add(fDetection);
 	}
+
+	public String getRemoteUri() {
+		if(remoteUri == null || remoteUri.isEmpty()){
+			return uri;
+		}
+		return remoteUri;
+	}
+
+	public void setRemoteUri(String remoteUri) {
+		this.remoteUri = remoteUri;
+	}
+	
 
 }

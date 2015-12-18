@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import com.cloud.common.IService;
 import com.cloud.common.dataset.BioID;
+import com.cloud.common.dataset.RemoteData;
 import com.cloud.dto.Image;
 import com.cloud.dto.ProcessResult;
 
@@ -20,17 +21,16 @@ public class TestService {
 	private List<Image> images;
 	private List<IService> services;
 
-	public TestService(String dataset) throws ExceptionInInitializerError{
+	public TestService(String dataset, String imageService) throws ExceptionInInitializerError{
 		this.dataset = dataset;
 		//TODO: Cargar desde el archivo de configuracion
-		if (!new File(dataset).exists()){
+		if (!dataset.contains("http") && !new File(dataset).exists()){
 			throw new ExceptionInInitializerError("Dataset not found");
 		}
 		
-		 //new FacePlusPlus(FacePlusPlus.DEFAULT_ATTRIBUTES),
-		//services = new IService[] { new OpenCVProcessor(face_cascade_url,eyes_cascade_url) };
 		services = new ArrayList<IService>();
-		images = BioID.loadImages(this.dataset);		
+		//images = BioID.loadImages(this.dataset);
+		images = RemoteData.loadImages(dataset, imageService);
 	}
 	
 	public void addService(IService service){

@@ -40,6 +40,8 @@ public class FDProperties {
 	public static final String BLUR_EFFECT = "BLUR_EFFECT";
 	public static final String SHOW_FACE_OPENCV = "SHOW_FACE_OPENCV";
 	public static final String RESULTADOS = "RESULTADOS";
+	public static final String REMOTE_DATASET = "REMOTE_DATASET";
+	public static final String REMOTE_IMAGE = "REMOTE_IMAGE";
 
 	/**
 	 * Constructor por defecto, protegido por clase Singleton

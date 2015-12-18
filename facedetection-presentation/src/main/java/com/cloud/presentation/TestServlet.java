@@ -30,9 +30,10 @@ public class TestServlet extends HttpServlet {
 	 */
 	public TestServlet() {
 		super();
-		String dataset = properties.getPropValue(FDProperties.DATASET);
+		String dataset = properties.getPropValue(FDProperties.REMOTE_DATASET);
+		String imageService = properties.getPropValue(FDProperties.REMOTE_IMAGE);
 		
-		testService = new TestService(dataset);
+		testService = new TestService(dataset,imageService);
 		//Agrego los servicios disponibles
 //		String faceCascade = properties.getPropValue(FDProperties.FACE_CASCADE_URL);
 //		String eyeCascade = properties.getPropValue(FDProperties.EYE_CASCADE_URL);

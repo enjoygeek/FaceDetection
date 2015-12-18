@@ -11,8 +11,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.cloud.dto.Image;
 import com.cloud.dto.ProcessResult;
 import com.cloud.local.OpenCVProcessor;
+import com.cloud.remote.FacePlusPlus;
 import com.cloud.service.Analisis;
 import com.cloud.service.Resumen;
 import com.cloud.service.TestService;
@@ -26,16 +28,18 @@ public class MainApp {
 
 	public static void main(String[] args) {
 		FDProperties properties = FDProperties.getInstance();
-		String dataset = properties.getPropValue(FDProperties.DATASET);
-
+		String dataset = properties.getPropValue(FDProperties.REMOTE_DATASET);
+		String imageService = properties.getPropValue(FDProperties.REMOTE_IMAGE);
+		Image.BASE_PATH_TO_DOWNLOAD = properties.getPropValue(FDProperties.DOWNLOAD_PATH);
+		
 		List<ProcessResult> salida = new ArrayList<ProcessResult>();
 		try {
 			OpenCVProcessor ocv_p = initOpenCV_Parameters(properties);
-			TestService ts = new TestService(dataset);
+			TestService ts = new TestService(dataset,imageService);
 			// Agrego los servicios disponibles
 
-			ts.addService(ocv_p);
-			// ts.addService(new FacePlusPlus(FacePlusPlus.DEFAULT_ATTRIBUTES));
+			//ts.addService(ocv_p);
+			ts.addService(new FacePlusPlus(FacePlusPlus.DEFAULT_ATTRIBUTES));
 
 			for (ProcessResult pr : ts.test()) {
 				salida.add(pr);
@@ -85,8 +89,8 @@ public class MainApp {
 	
 	private static void escribirArchivo(String texto){		
 		String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-		System.out.println(urlResultados+"\\" + timeLog+".txt");
-		File logFile = new File(urlResultados+"\\" + timeLog+".txt");
+		System.out.println(urlResultados+ File.separator + timeLog+".txt");
+		File logFile = new File(urlResultados+ File.separator + timeLog+".txt");
 		BufferedWriter writer = null;
 		try {
 			writer = new BufferedWriter(new FileWriter(logFile));

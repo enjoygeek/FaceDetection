@@ -48,7 +48,7 @@ public class OpenCVServlet extends HttpServlet {
 		NativeLibraries.loadLibraries();			
 		Image image = null;
 		try {
-			image = new Image(imagen,-1, -1);
+			image = new Image(imagen,-1, -1, true);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			response.getOutputStream().println(e.getMessage());

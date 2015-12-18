@@ -32,7 +32,7 @@ public class BioID {
 			.filter(f -> f.getName().endsWith(extensionImage))
 			.forEach(f -> {
 				try{
-				Image bI = new BioImage(f.getParent() + "\\" + f.getName());
+				Image bI = new BioImage(f.getParent() + File.separator + f.getName());
 				images.add(bI);
 				}
 				catch(Exception e){

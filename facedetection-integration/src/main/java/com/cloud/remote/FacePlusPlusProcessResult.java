@@ -26,24 +26,25 @@ public class FacePlusPlusProcessResult extends ProcessResult {
 				.get("img_width")));
 		Integer imgheight = Integer.valueOf(String.valueOf(processResult
 				.get("img_height")));
-		return new Image(url,imgWidth, imgheight);
+		Boolean download = false;
+		return new Image(url,imgWidth, imgheight, download );
 	}
 
 	public FaceDetection parseFace(Map<String, Object> attributes) {
 		FaceDetection faceDetection = new FaceDetection();
 		Map<String, Object> position = (Map<String, Object>) attributes
 				.get("position");
-		Map<String, Integer> eye_left = (Map<String, Integer>) position
+		Map<String, Double> eye_left = (Map<String, Double>) position
 				.get("eye_left");
-		Map<String, Integer> eye_right = (Map<String, Integer>) position
+		Map<String, Double> eye_right = (Map<String, Double>) position
 				.get("eye_right");
 
 		Integer[] eyeLeft = new Integer[] {
-				eye_left.get("x") / 100 * this.image.getWidth(),
-				eye_left.get("y") / 100 * this.image.getHeight(), };
+				new Double(eye_left.get("x") / 100 * this.image.getWidth()).intValue(),
+				new Double(eye_left.get("y") / 100 * this.image.getHeight()).intValue(), };
 		Integer[] eyeRight = new Integer[] {
-				eye_right.get("x") / 100 * this.image.getWidth(),
-				eye_right.get("y") / 100 * this.image.getHeight(), };
+				new Double(eye_right.get("x") / 100 * this.image.getWidth()).intValue(),
+				new Double(eye_right.get("y") / 100 * this.image.getHeight()).intValue(), };
 		Coordinate2D ojoIzquierdo = new Coordinate2D(eyeLeft[0], eyeLeft[1]);
 		Coordinate2D ojoDerecho = new Coordinate2D(eyeRight[0], eyeRight[1]);
 

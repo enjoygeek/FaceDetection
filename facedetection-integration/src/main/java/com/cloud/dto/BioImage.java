@@ -11,7 +11,7 @@ import com.cloud.common.dataset.BioID;
 public class BioImage extends Image {
 
 	public BioImage(String uri) throws Exception {
-		super(uri, -1, -1);
+		super(uri, -1, -1, true);
 		loadEyeData();
 	}
 

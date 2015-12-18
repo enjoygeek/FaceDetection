@@ -1,10 +1,9 @@
 package com.cloud.remote;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,9 +12,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.BufferingClientHttpRequestFactory;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.util.StopWatch;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -25,7 +21,7 @@ import com.cloud.dto.Image;
 import com.cloud.dto.ProcessResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class FacePlusPlus implements IService {
+public class SkyBiometry implements IService {
 	
 	protected static Logger logger = Logger.getGlobal();
 	
@@ -34,7 +30,7 @@ public class FacePlusPlus implements IService {
 	private HashMap<String, String> parameters;
 	public static String DEFAULT_ATTRIBUTES = "glass,pose,gender,age,race,smiling";
 
-	public FacePlusPlus(String attributes) {
+	public SkyBiometry(String attributes) {
 		parameters = new HashMap<String, String>();
 		parameters.put("attribute", attributes);
 	}
@@ -44,24 +40,9 @@ public class FacePlusPlus implements IService {
 		//TODO Completar tamaño y peso de la imagen en resultado
 		//resultado.setImage(new Image());
 		
-		parameters.put("url", image.getRemoteUri());
+		parameters.put("url", image.getUri());
 		RestTemplate restTemplate = new RestTemplate();
-		
-		
-		/*
-		ClientHttpRequestInterceptor ri = new LoggingRequestInterceptor();
-		List<ClientHttpRequestInterceptor> ris = new ArrayList<ClientHttpRequestInterceptor>();
-		ris.add(ri);
-		restTemplate.setInterceptors(ris);
-		restTemplate.setRequestFactory(new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()));
-		 */
-		
-		
-		
-		
-		
-		
-		
+
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -83,14 +64,13 @@ public class FacePlusPlus implements IService {
 		sw.start("initializing");
 		resultado.setStartTime(System.nanoTime());
 		//Actual processing
-		
 		ResponseEntity<String> resultString = restTemplate.exchange(builder.build()
 				.toUriString(), HttpMethod.GET, entity, String.class);
 		//End time measure
 		sw.stop();
 		
 		resultado.setEndTime(System.nanoTime());
-		//System.out.println("taskInfo:"+sw.getTaskInfo() +" shortSumary: "+sw.shortSummary()+ "response_time=" + sw.prettyPrint());
+		System.out.println("taskInfo:"+sw.getTaskInfo() +" shortSumary: "+sw.shortSummary()+ "response_time=" + sw.prettyPrint());
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, Object> result = new HashMap<>();
