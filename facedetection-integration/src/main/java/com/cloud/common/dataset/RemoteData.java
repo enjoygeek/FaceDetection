@@ -47,8 +47,8 @@ public class RemoteData {
 		List<Image> images = new ArrayList<Image>();
 		List<String> files = loadDataset(listEndpoint);
 		for(String file : files){
-			try{
-				images.add(new Image(imageEndpoint+file, -1, -1, true));
+			try{				
+				images.add(new BioImage(file));
 			}catch(Exception ex){
 				logger.log(Level.SEVERE, ex.getMessage());
 			}
@@ -58,9 +58,9 @@ public class RemoteData {
 
 	}
 
-	public static void main(String[] args) {
+/*	public static void main(String[] args) {
 		NativeLibraries.loadLibraries();
-		String dataset = "http://cuys-srv.cloudapp.net/facedetection-cdn/api/Assets/bioid";
+	//	String dataset = "http://cuys-srv.cloudapp.net/facedetection-cdn/api/Assets/bioid";
 		String imageService = "http://cuys-srv.cloudapp.net/facedetection-cdn/api/Image/";
 		Image.BASE_PATH_TO_DOWNLOAD="/Users/Alejandro/Documents/Facultad/Cloud/facedetection-folder/upload";
 		List<Image> loadImages = RemoteData.loadImages(dataset,imageService);
@@ -69,5 +69,5 @@ public class RemoteData {
 		}
 		System.out.println("Image count: "+ loadImages.size());
 	}
-
+*/
 }

@@ -44,7 +44,7 @@ public class Image {
 	public Image(String uri, int width, int height, Boolean download) throws Exception {
 		super();
 		String fileName = "";
-		if(download){
+		if(download){			
 			fileName = this.downloadImage(uri); // Si es una imagen que est�
 													   // en la web, la descarga y
 													   // retorna el path local

@@ -29,14 +29,17 @@ public class FacePlusPlus implements IService {
 	
 	protected static Logger logger = Logger.getGlobal();
 	
-	private final String serviceUrl = "https://faceplusplus-faceplusplus.p.mashape.com/detection/detect";
-	private final String xMashapeKey = "1eIYzNA1P5msh6ThXy009FmSs5b3p1P2IoajsnAwdaN612TSBZ";
+	private String serviceUrl;
+	private String xMashapeKey;
 	private HashMap<String, String> parameters;
-	public static String DEFAULT_ATTRIBUTES = "glass,pose,gender,age,race,smiling";
+	public static String DEFAULT_ATTRIBUTES = "";
 
-	public FacePlusPlus(String attributes) {
+	public FacePlusPlus(String serviceUrl, String xMashapeKey, String attributes) {
+		this.serviceUrl = serviceUrl;
+		this.xMashapeKey = xMashapeKey;
 		parameters = new HashMap<String, String>();
-		parameters.put("attribute", attributes);
+		if (!attributes.isEmpty())
+			parameters.put("attribute", attributes);
 	}
 
 	public ProcessResult run(Image image) {
@@ -56,12 +59,7 @@ public class FacePlusPlus implements IService {
 		restTemplate.setRequestFactory(new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()));
 		 */
 		
-		
-		
-		
-		
-		
-		
+
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -73,8 +71,7 @@ public class FacePlusPlus implements IService {
 		parameters.keySet().stream()
 				.forEach(k -> builder.queryParam(k, parameters.get(k)));
 
-		HttpEntity<String> entity = new HttpEntity<String>("parameters",
-				headers);
+		HttpEntity<String> entity = new HttpEntity<String>("parameters",headers);
 				
 
 

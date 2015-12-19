@@ -42,6 +42,14 @@ public class FDProperties {
 	public static final String RESULTADOS = "RESULTADOS";
 	public static final String REMOTE_DATASET = "REMOTE_DATASET";
 	public static final String REMOTE_IMAGE = "REMOTE_IMAGE";
+	public static final String XMASHAPEKEY = "XMASHAPEKEY";
+	public static final String FACERECT_SERVICEURL = "FACERECT_SERVICEURL";
+	public static final String FACEPLUSPLUS_SERVICEURL = "FACEPLUSPLUS_SERVICEURL";
+	public static final String SKYBIOMETRY_API_KEY = "SKYBIOMETRY_API_KEY";
+	public static final String SKYBIOMETRY_API_SECRET = "SKYBIOMETRY_API_SECRET";
+	public static final String SKYBIOMETRY_SERVICEURL = "SKYBIOMETRY_SERVICEURL";
+
+	
 
 	/**
 	 * Constructor por defecto, protegido por clase Singleton
