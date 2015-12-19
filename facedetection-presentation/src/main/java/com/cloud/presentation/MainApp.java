@@ -36,27 +36,32 @@ public class MainApp {
 		Image.BASE_PATH_TO_DOWNLOAD = properties.getPropValue(FDProperties.DOWNLOAD_PATH);
 
 		List<ProcessResult> salida = new ArrayList<ProcessResult>();
+		Double timeTotal = 0.0;
+		Double timeInternalTotal = 0.0;
 		try {
-
 			TestService ts = new TestService(dataset, imageService);
 			// Agrego los servicios disponibles
 			// OpenCVProcessor ocv_p = initOpenCV_Parameters(properties);
 			// ts.addService(ocv_p);
-			 FaceRect fRect = initFaceRect_Parameters(properties);
-			 ts.addService(fRect);
+			// FaceRect fRect = initFaceRect_Parameters(properties);
+			// ts.addService(fRect);
 
-//			SkyBiometry sBiometry = initSkyBiometry_Parameters(properties);
-	//		ts.addService(sBiometry);
+			//SkyBiometry sBiometry = initSkyBiometry_Parameters(properties);
+			//ts.addService(sBiometry);
 
-			// FacePlusPlus facePlusPlus = initFacePlusPlus_Parameters(properties);
-			// ts.addService(facePlusPlus);
+			 FacePlusPlus facePlusPlus = initFacePlusPlus_Parameters(properties);
+			 ts.addService(facePlusPlus);
 
 			for (ProcessResult pr : ts.test()) {
-				salida.add(pr);
+				salida.add(pr);	
+				timeTotal += pr.getElapsedTime();
+				timeInternalTotal += pr.getInternalTime();
+				
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, e.getMessage());
 		}
+	
 		Resumen r = new Resumen();
 		r = Analisis.analizar(salida);
 		r.procesarDistancias(salida);
@@ -85,6 +90,11 @@ public class MainApp {
 		System.out.println("Promedio de distancias: " + round(r.getPromedioDistancia(), 2));
 		System.out.println("Varianza de distancias: " + round(r.getVarianzaDistancia(), 2));
 		System.out.println("Desviación Estandar de distancias: " + round(r.getDesviacionDistancia(), 2));
+		System.out.println("Tiempo total en Segundos: " + round(timeTotal, 0)/1000);
+		System.out.println("Promedio de Tiempo por Cara Detectada: " + (round(timeTotal, 0)/1000)/r.getCantCarasReferencia());
+		System.out.println("Tiempo total Interno en Segundos: " + round(timeInternalTotal, 0)/1000);
+		System.out.println("Promedio de Tiempo Interno por Cara Detectada: " + (round(timeInternalTotal, 0)/1000)/r.getCantCarasDetectadas());
+		
 	}
 
 	public static double round(double value, int places) {

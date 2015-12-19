@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StopWatch;
@@ -19,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.cloud.common.IService;
+import com.cloud.common.PerfRequestSyncInterceptor;
 import com.cloud.dto.Image;
 import com.cloud.dto.ProcessResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,11 +52,13 @@ public class SkyBiometry implements IService {
 	public ProcessResult run(Image image) {
 		ProcessResult resultado = new SkyBiometryProcessResult(this.serviceUrl);
 		//TODO Completar tamaño y peso de la imagen en resultado
-		//resultado.setImage(new Image());	
+		resultado.setImage(image);	
 		mvn.remove("urls");
 		//mvn.replace("urls", Arrays.asList(new String[]{image.getRemoteUri()}));
 		mvn.add("urls", image.getRemoteUri());
 		RestTemplate restTemplate = new RestTemplate();
+		PerfRequestSyncInterceptor perfRequestSyncInterceptor = new PerfRequestSyncInterceptor();
+		restTemplate.setInterceptors(Arrays.asList(new ClientHttpRequestInterceptor[]{perfRequestSyncInterceptor}));
 
 		
 		HttpHeaders headers = new HttpHeaders();
@@ -74,17 +78,13 @@ public class SkyBiometry implements IService {
 
 
 		//Time measure
-		StopWatch sw = new StopWatch();
-		sw.start("initializing");
+		String uri = builder.build().toUriString();
 		resultado.setStartTime(System.nanoTime());
 		//Actual processing		
-		ResponseEntity<String> resultString = restTemplate.exchange(builder.build()
-				.toUriString(), HttpMethod.POST, entity, String.class);
+		ResponseEntity<String> resultString = restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
 		//End time measure
-		sw.stop();
-		
-		resultado.setEndTime(System.nanoTime());
-		System.out.println("taskInfo:"+sw.getTaskInfo() +" shortSumary: "+sw.shortSummary()+ "response_time=" + sw.prettyPrint());
+		resultado.setEndTime(System.nanoTime());		
+		resultado.setInternalTime(perfRequestSyncInterceptor.totalTime);
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, Object> result = new HashMap<>();

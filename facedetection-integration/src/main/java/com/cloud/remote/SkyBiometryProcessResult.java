@@ -19,27 +19,37 @@ public class SkyBiometryProcessResult extends ProcessResult {
 		super(endpoint);
 	}
 
-	private Image parseImageData(Map<String, Object> processResult) throws Exception {
+	/*private Image parseImageData(Map<String, Object> processResult) throws Exception {
+
 		ArrayList<Object> photos = (ArrayList<Object>) processResult.get("photos");
-		
-		String url = String.valueOf(((Map<String, Object>)photos.get(0)).get("url"));// El webservice
-																// retorna la
-																// url completa
-																// con la
-																// extension
+
+		String url = String.valueOf(((Map<String, Object>) photos.get(0)).get("url"));// El
+																						// webservice
+		// retorna la
+		// url completa
+		// con la
+		// extension
 		String extensionImage = "." + FilenameUtils.getExtension(url);
 		url = FilenameUtils.removeExtension(url);
 
-		Integer imgWidth = Integer.valueOf(String.valueOf(((Map<String, Object>)photos.get(0)).get("width")));
-		Integer imgheight = Integer.valueOf(String.valueOf(((Map<String, Object>)photos.get(0)).get("height")));
+		
+		Integer imgWidth = Integer.valueOf(String.valueOf(((Map<String, Object>) photos.get(0)).get("width")));
+		Integer imgheight = Integer.valueOf(String.valueOf(((Map<String, Object>) photos.get(0)).get("height")));
 		Boolean download = false;
 		return new Image(url, imgWidth, imgheight, download);
-	}
+	}*/
 
 	public FaceDetection parseFace(Map<String, Object> attributes) {
 
 		FaceDetection faceDetection = new FaceDetection();
+
+		if (!attributes.containsKey("eye_left"))
+			return faceDetection;
+
 		Map<String, Double> eye_left = (Map<String, Double>) attributes.get("eye_left");
+
+		if (!attributes.containsKey("eye_right"))
+			return faceDetection;
 		Map<String, Double> eye_right = (Map<String, Double>) attributes.get("eye_right");
 
 		Integer[] eyeLeft = new Integer[] { new Double(eye_left.get("x") / 100 * this.image.getWidth()).intValue(),
@@ -58,17 +68,24 @@ public class SkyBiometryProcessResult extends ProcessResult {
 	public void process(Map<String, Object> processResult) throws Exception {
 		this.setServiceOutput(processResult.toString());
 
-		this.setImage(parseImageData(processResult));
-		// Get detected faces		
+		//this.setImage(parseImageData(processResult));
+		// Get detected faces
+
+		if (!processResult.containsKey("photos"))
+			return;
+
 		ArrayList<Map<String, Object>> photos = (ArrayList<Map<String, Object>>) processResult.get("photos");
 
 		// For each face, recover eye positions
-		for (Map<String, Object> photo : photos){
-			
+		for (Map<String, Object> photo : photos) {
+
+			if (!photo.containsKey("tags"))
+				return;
+
 			ArrayList<Map<String, Object>> tags = (ArrayList<Map<String, Object>>) photo.get("tags");
-			
+
 			for (Map<String, Object> face : tags) {
-				
+
 				Map<String, Object> attributes = (Map<String, Object>) face;
 				this.image.addDetections(parseFace(attributes));
 			}

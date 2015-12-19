@@ -16,6 +16,7 @@ public abstract class ProcessResult {
 	protected long startTime;
 	@JsonIgnore
 	protected long endTime;
+	protected double internalTime;
 	//protected List<FaceDetection> faces = new ArrayList<FaceDetection>();
 
 	public ProcessResult(String endpoint) {
@@ -78,5 +79,13 @@ public abstract class ProcessResult {
 	
 	public float getElapsedTime(){
 		return (float)(this.endTime - this.startTime) / (float)1000000;				
+	}
+	
+	public double getInternalTime(){
+		return internalTime;				
+	}
+	
+	public void setInternalTime(double time){
+		this.internalTime = time;
 	}
 }

@@ -23,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.cloud.common.IService;
+import com.cloud.common.PerfRequestSyncInterceptor;
 import com.cloud.dto.Image;
 import com.cloud.dto.ProcessResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,17 +46,16 @@ public class FaceRect implements IService {
 
 	public ProcessResult run(Image image) {
 		ProcessResult resultado = new FaceRectProcessResult(this.serviceUrl);
+		
 		//TODO Completar tamaño y peso de la imagen en resultado
-		//resultado.setImage(new Image());
-		System.out.println("envia: "+image.getRemoteUri());
+		resultado.setImage(image);		
 	
-		try {
-			parameters.put("url",URLEncoder.encode(image.getRemoteUri(),"UTF-8"));
-		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		RestTemplate restTemplate = new RestTemplate();
+		
+			parameters.put("url",image.getRemoteUri());
+	
+			RestTemplate restTemplate = new RestTemplate();
+			PerfRequestSyncInterceptor perfRequestSyncInterceptor = new PerfRequestSyncInterceptor();
+			restTemplate.setInterceptors(Arrays.asList(new ClientHttpRequestInterceptor[]{perfRequestSyncInterceptor}));
 		
 		
 		/*
@@ -91,18 +91,16 @@ public class FaceRect implements IService {
 
 
 		//Time measure
-		StopWatch sw = new StopWatch();
-		sw.start("initializing");
-		resultado.setStartTime(System.nanoTime());
-		//Actual processing
-		System.out.println(builder.build());
-		System.out.println(entity);
-		ResponseEntity<String> resultString = restTemplate.exchange(builder.build()
-				.toUriString(), HttpMethod.GET, entity, String.class);
-		//End time measure
-		sw.stop();
 		
+		
+		//Actual processing	
+		
+		String bld = builder.build().toUriString();	
+		resultado.setStartTime(System.nanoTime());
+		ResponseEntity<String> resultString = restTemplate.exchange(bld, HttpMethod.GET, entity, String.class);
+		//End time measure
 		resultado.setEndTime(System.nanoTime());
+		resultado.setInternalTime(perfRequestSyncInterceptor.totalTime);
 		//System.out.println("taskInfo:"+sw.getTaskInfo() +" shortSumary: "+sw.shortSummary()+ "response_time=" + sw.prettyPrint());
 		
 		ObjectMapper objectMapper = new ObjectMapper();
@@ -118,7 +116,7 @@ public class FaceRect implements IService {
 		try {
 			resultado.process(result);
 		} catch (Exception e) {
-			result.put("Result", e.getMessage());
+			logger.log(Level.SEVERE, e.getMessage());
 		}
 		return resultado;
 
