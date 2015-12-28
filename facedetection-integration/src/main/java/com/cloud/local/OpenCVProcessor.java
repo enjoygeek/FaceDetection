@@ -1,6 +1,7 @@
 package com.cloud.local;
 
 import java.awt.geom.Rectangle2D;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,11 +28,11 @@ public class OpenCVProcessor implements IService {
 	private CascadeClassifier face_cascade;
 	private CascadeClassifier eyes_cascade;
 	private double fEscalarFace; // Valores mas altos significan menos
-									// precisión.
-	private double fEscalarEye; // Valores mas altos significan menos precisión.
-	private int minNeighborsFace;// Valores mas altos significan menos precisión
+									// precisiï¿½n.
+	private double fEscalarEye; // Valores mas altos significan menos precisiï¿½n.
+	private int minNeighborsFace;// Valores mas altos significan menos precisiï¿½n
 									// pero mas fiabilidad
-	private int minNeighborsEye;// Valores mas altos significan menos precisión
+	private int minNeighborsEye;// Valores mas altos significan menos precisiï¿½n
 								// pero mas fiabilidad
 	private int minPercentSizeFace;
 	private int maxPercentSizeFace;
@@ -43,8 +44,9 @@ public class OpenCVProcessor implements IService {
 	public OpenCVProcessor(String face_cascade_url, String eyes_cascade_url) {
 		// //// Defino los clasificadores//////
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		setFaceClassifier(new CascadeClassifier(face_cascade_url));
-		setEyesClassifier(new CascadeClassifier(eyes_cascade_url));
+		System.out.println(Paths.get(face_cascade_url).toString());
+		setFaceClassifier(new CascadeClassifier(Paths.get(face_cascade_url).toString()));
+		setEyesClassifier(new CascadeClassifier(Paths.get(eyes_cascade_url).toString()));
 	}
 
 	public void setFaceClassifier(CascadeClassifier clasificador) {
@@ -78,7 +80,7 @@ public class OpenCVProcessor implements IService {
 
 		java.util.Date comienzo = new java.util.Date();
 		// /////////////////////////////
-		// Comienzo detección de rostro
+		// Comienzo detecciï¿½n de rostro
 		// /////////////////////////////
 		getFaceClassifier().detectMultiScale(image.getMatImage(), faceDetections, fEscalarFace, minNeighborsFace, 0,
 				new Size(image.getWidth() * minPercentSizeFace / 100, image.getHeight() * minPercentSizeFace / 100),
@@ -91,7 +93,7 @@ public class OpenCVProcessor implements IService {
 			faceDetection.setBoundingBox(
 					new Rectangle2D.Double(rect_face.x, rect_face.y, rect_face.width, rect_face.height));
 			// /////////////////////////////
-			// Comienzo detección de ojos
+			// Comienzo detecciï¿½n de ojos
 			// /////////////////////////////
 			leftEye = rightEye = nose = mouth = null; // Reinicio los puntos del
 														// rostro anterior

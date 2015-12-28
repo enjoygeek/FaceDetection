@@ -28,7 +28,7 @@ public class BioImage extends Image {
 					new URL(fileName+".eye")
 							.openStream(),
 					"UTF-8");
-			out = scanner.useDelimiter("\\A").next();
+			out = scanner.useDelimiter("\\Z").next();
 			String[] lines = out.split(System.getProperty("line.separator"));
 			line2 = lines[1];
 			// String line2 = Files.readAllLines(Paths.get(fileName +

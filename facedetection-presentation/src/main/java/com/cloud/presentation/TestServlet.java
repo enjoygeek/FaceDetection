@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cloud.common.NativeLibraries;
+import com.cloud.dto.Image;
 import com.cloud.dto.ProcessResult;
 import com.cloud.local.OpenCVProcessor;
 import com.cloud.remote.FacePlusPlus;
@@ -42,30 +44,62 @@ public class TestServlet extends HttpServlet {
 		super();
 		String dataset = properties.getPropValue(FDProperties.REMOTE_DATASET);
 		String imageService = properties.getPropValue(FDProperties.REMOTE_IMAGE);
-
+		Image.BASE_PATH_TO_DOWNLOAD = properties.getPropValue(FDProperties.DOWNLOAD_PATH);
+		
 		testService = new TestService(dataset, imageService);
-		// Agrego los servicios disponibles
-
-		// OpenCVProcessor ocv_p = initOpenCV_Parameters(properties);
-		// testService.addService(ocv_p);
-
-		// FaceRect fRect = initFaceRect_Parameters(properties);
-		// testService.addService(fRect);
-
+		
+		urlResultados = properties.getPropValue(FDProperties.RESULTADOS);
+	}
+	
+	
+	private void addOpenCV(){
+		OpenCVProcessor ocv_p = initOpenCV_Parameters(properties);
+		testService.addService(ocv_p);
+	}
+	
+	private void addFaceRect(){
+		FaceRect fRect = initFaceRect_Parameters(properties);
+		testService.addService(fRect);
+	}
+	
+	private void addSkyBiometry(){
 		SkyBiometry sBiometry = initSkyBiometry_Parameters(properties);
 		testService.addService(sBiometry);
-
-		// FacePlusPlus facePlusPlus = initFacePlusPlus_Parameters(properties);
-		// testService.addService(facePlusPlus);
-
 	}
 
+	private void addFacePlusPlus(){
+		FacePlusPlus facePlusPlus = initFacePlusPlus_Parameters(properties);
+		testService.addService(facePlusPlus);
+	}
+	
+	private void processRequest(HttpServletRequest request){
+		String openCV = request.getParameter("opencv");
+		String facePlusPlus = request.getParameter("faceplusplus");
+		String faceRect = request.getParameter("facerect");
+		String skyBiometry = request.getParameter("skybiometry");
+		
+		if(openCV != null && openCV.equals("true")){
+			addOpenCV();
+		}
+		if(facePlusPlus != null && facePlusPlus.equals("true")){
+			addFacePlusPlus();
+		}
+		if(faceRect != null && faceRect.equals("true")){
+			addFaceRect();
+		}
+		if(skyBiometry != null && skyBiometry.equals("true")){
+			addSkyBiometry();
+		}
+	}
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		// Agrego los servicios disponibles
+		processRequest(request);
+		//Processing
 		List<ProcessResult> testOutput = testService.test();
 		// Imprime JSON
 		try {
@@ -122,7 +156,7 @@ public class TestServlet extends HttpServlet {
 	private static OpenCVProcessor initOpenCV_Parameters(FDProperties properties) {
 		String faceCascade = properties.getPropValue(FDProperties.FACE_CASCADE_URL);
 		String eyeCascade = properties.getPropValue(FDProperties.EYE_CASCADE_URL);
-		urlResultados = properties.getPropValue(FDProperties.RESULTADOS);
+		
 		if (!new File(faceCascade).exists()) {
 			throw new ExceptionInInitializerError("Face-Classifier not found");
 		}

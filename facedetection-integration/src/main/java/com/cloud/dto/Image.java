@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +81,18 @@ public class Image {
 		}
 		file = new File(fileName);
 	}
+	
+	private InputStream read(URL url) {
+		try {
+		    HttpURLConnection httpcon = (HttpURLConnection) url.openConnection();
+		    httpcon.addRequestProperty("User-Agent", "Mozilla/4.0");
+
+		  return httpcon.getInputStream();
+		 } catch (IOException e) {
+		    String error = e.toString();
+		  throw new RuntimeException(e);
+		 }
+		}
 
 
 	private String downloadImage(String imageUrl) throws Exception {
@@ -90,7 +103,7 @@ public class Image {
 				throw new Exception("Missing local upload path");
 			try {
 				URL url = new URL(imageUrl);
-				InputStream in = new BufferedInputStream(url.openStream());
+				InputStream in = new BufferedInputStream(read(url));
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
 				byte[] buf = new byte[1024];
 				int n = 0;
