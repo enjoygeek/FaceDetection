@@ -36,12 +36,19 @@ public class OpenCVServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String imagen = request.getParameter("image");
+		String propertiesUrl = request.getParameter("properties");
 		
 		ObjectMapper om = new ObjectMapper();	
 		
 		if(imagen== null || imagen.isEmpty()){
-			response.getOutputStream().println(om.writeValueAsString("Falta parametro image"));
+			response.getOutputStream().println(om.writeValueAsString("Missing parameter: image"));
 			return;
+		}
+		
+		if(propertiesUrl!=null && !propertiesUrl.isEmpty()){
+			FDProperties.loadRemote(propertiesUrl);
+		}else{
+			FDProperties.init();
 		}
 		
 		Image.BASE_PATH_TO_DOWNLOAD = properties.getPropValue(FDProperties.DOWNLOAD_PATH);

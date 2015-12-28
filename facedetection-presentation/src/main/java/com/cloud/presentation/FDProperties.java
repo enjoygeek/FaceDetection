@@ -3,9 +3,17 @@ package com.cloud.presentation;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
+import java.net.URL;
 import java.util.Properties;
+import java.util.Scanner;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 
 import com.cloud.common.NativeLibraries;
+import com.cloud.dto.Coordinate2D;
+import com.cloud.dto.FaceDetection;
 
 
 /**
@@ -78,7 +86,7 @@ public class FDProperties {
 	 * Lee el archivo de configuraciones
 	 * @throws IOException
 	 */
-	private static void init() throws IOException{
+	public static void init() throws IOException{
 		prop = new Properties();		
  
 		InputStream inputStream = instance.getClass().getClassLoader().getResourceAsStream(PROPFILENAME);
@@ -89,6 +97,27 @@ public class FDProperties {
 			throw new FileNotFoundException("property file '" + PROPFILENAME + "' not found in the classpath");
 		}
  
+	}
+	
+	public static void loadRemote(String url){
+		Scanner scanner = null;
+		try {
+						
+			String out = "";
+			scanner = new Scanner(
+					new URL(url)
+							.openStream(),
+					"UTF-8");
+			
+			out = scanner.useDelimiter("\\Z").next();
+			prop.load(new StringReader(out));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			IOUtils.closeQuietly(scanner);
+		}
+		
 	}
 	
 	/**

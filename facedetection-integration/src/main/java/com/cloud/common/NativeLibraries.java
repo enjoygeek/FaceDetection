@@ -9,7 +9,7 @@ public class NativeLibraries {
 			final String[] libraries = ClassScope.getLoadedLibraries(ClassLoader.getSystemClassLoader());
 			if(libraries != null){
 				for(String s : libraries){
-					if (s.equals(Core.NATIVE_LIBRARY_NAME)){
+					if (s.contains(Core.NATIVE_LIBRARY_NAME)){
 						return;
 					}
 				}

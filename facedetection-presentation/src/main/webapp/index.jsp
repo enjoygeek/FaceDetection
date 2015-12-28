@@ -10,8 +10,8 @@
     <body>
         <h1>Available services</h1>
         <ul>
-        	<li><a href="./TestServlet" >TestServlet</a></li>
-        	<li><a href="./OpenCVServlet" >OpenCVServlet (Query param: image)</a></li>
+        	<li><a href="./TestServlet" >TestServlet TestServlet (Query params: [skybiometry=true][faceplusplus=true][facerect=true][opencv=true])</a></li>
+        	<li><a href="./OpenCVServlet" >OpenCVServlet (Query param: image, [properties=http://....txt])</a></li>
         </ul>
     </body>
 </html>
